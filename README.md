@@ -2,6 +2,7 @@
 NetX is an API, that hopefully will have a frontend in the future for a Explorer of the BURST network...
 
 # DONE:
+<<<<<<< HEAD
 - API calls flow:
   - POST:
     - peers / peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
@@ -24,6 +25,21 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
           or
         {"address": "123.123.123.123:8123"}
       ```
+=======
+1. GET:
+  * all peers - paginated (max 250 records) (localhost:3000/peers/:start/:howmany)
+2. POST:
+* peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
+  - {"requestType": "peersByPlatform","platform": "brs"}
+  - {"requestType": "peersByVersion","version": "1.1.1"}
+  - {"requestType": "peersByHeight","platform": "brs"}
+ 
+* peerById / peerByAddress (localhost:3000/peer/)
+  - {"id": 1}
+  - {"address": "123.123.123.123:8123"}
+ 
+
+>>>>>>> 28c5a81304f8b9268466a2a645c32a500449f603
 - Error handling and validated data
 - Some Documentation
 
