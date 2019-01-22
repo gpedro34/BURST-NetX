@@ -14,16 +14,6 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
 * peerById / peerByAddress (localhost:3000/peer/)
   - {"id": 1}
   - {"address": "123.123.123.123:8123"}
-2. POST:
-* peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
-  - {"requestType": "peersByPlatform","platform": "brs"}
-  - {"requestType": "peersByVersion","version": "1.1.1"}
-  - {"requestType": "peersByHeight","platform": "brs"}
-
-* peerById / peerByAddress (localhost:3000/peer/)
-  - {"id": 1}
-  - {"address": "123.123.123.123:8123"}
-
 
 # TODO:
 - Integrate MariaDB functionality
