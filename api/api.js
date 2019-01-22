@@ -13,18 +13,21 @@ app.use(bodyParser.json());
 // API Routes
 const peersRoutes = require('./routes/peers');
   // Get all peers
-  app.get('/api/peers', peersRoutes.peers);
-  // Get peers by Platform
-  app.get('/api/peers/platform/:platform', peersRoutes.peersByPlatform);
-  // Get peers by Version
-  app.get('/api/peers/version/:version', peersRoutes.peersByVersion);
-  // Get peers by Height
-  app.get('/api/peers/height/:height', peersRoutes.peersByHeight);
+  app.get('/api/peers/:start/:howmany', peersRoutes.peers);
+  // Get peers by Platform, Version or Hight
+  /* Takes a POST with raw JSON like:
+    {"requestType": "byPlatform","platform": "brs"} or
+    {"requestType": "byVersion","version": "1.1.1"} or
+    {"requestType": "byHeight","platform": "brs"}
+  */
+  app.post('/api/peers', peersRoutes.peersPost);
 const peerRoutes = require('./routes/peer');
-  // Get peer by ID
-  app.get('/api/peer/id/:id', peerRoutes.peerById);
-  // Get peer by Address
-  app.get('/api/peer/address/:address', peerRoutes.peerByAddress);
+  // Get peer by ID or address
+  /* Takes a POST with raw JSON like:
+    {"id": 1} or
+    {"address": "123.123.123.123:8123"}
+  */
+  app.post('/api/peer', peerRoutes.peerPost);
 
 // Invalid routes
 app.use((req, res, next) => {
