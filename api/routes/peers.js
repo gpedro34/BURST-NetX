@@ -29,6 +29,13 @@ exports.peers = (req, res) => {
 // Get peers by Platform
 const peersByPlatform = async (platform) => {
   // TODO: Get peers by platform from DB
+  if(platform){
+    // Just this one
+
+  } else {
+    // All of them
+  }
+
 
 
   // Ex. of how should be the object coming out of this function
@@ -37,6 +44,18 @@ const peersByPlatform = async (platform) => {
       addresses:['addresses in here','...','addresses in here']
     }
   }
+  // or :
+/*{
+    platforms:[
+      {
+        addresses:['addresses in here','...','addresses in here']
+      },
+      ...
+      ,{
+        addresses:['addresses in here','...','addresses in here']
+      }
+    ]
+  }*/
   return obj;
 }
 // Get peers by Version
@@ -70,20 +89,23 @@ const peersByHeight = async (height) => {
   return obj;
 }
 // Handles the POST request
-exports.peersPost = async (req, res) => {
-  let obj;
-  if(req.body.requestType === 'byPlatform'){
+exports.peersPost = async (req, res, next) => {
+  let obj = {};
+  if(req.body.requestType === 'peersbyPlatform'){
     obj = await peersByPlatform(req.body.platform)
     // Send the results
     res.send(obj);
-  } else if(req.body.requestType === 'byVersion'){
+  } else if(req.body.requestType === 'peersbyVersion'){
     obj = await peersByVersion(req.body.version)
     // Send the results
     res.send(obj);
-  } else if(req.body.requestType === 'byHeight'){
+  } else if(req.body.requestType === 'peersbyHeight'){
     obj = await peersByHeight(req.body.height)
   } else {
-    obj.status = 500;
+    const error = new Error('Not a valid API call');
+    error.status = 404;
+    error.message = 'Not a valid API call';
+    next(error)
   }
   // Send the results
   res.send(obj);

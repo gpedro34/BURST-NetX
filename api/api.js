@@ -16,9 +16,9 @@ const peersRoutes = require('./routes/peers');
   app.get('/api/peers/:start/:howmany', peersRoutes.peers);
   // Get peers by Platform, Version or Hight
   /* Takes a POST with raw JSON like:
-    {"requestType": "byPlatform","platform": "brs"} or
-    {"requestType": "byVersion","version": "1.1.1"} or
-    {"requestType": "byHeight","platform": "brs"}
+    {"requestType": "peersbyPlatform","platform": "brs"} or
+    {"requestType": "peersbyVersion","version": "1.1.1"} or
+    {"requestType": "peersbyHeight","platform": "brs"}
   */
   app.post('/api/peers', peersRoutes.peersPost);
 const peerRoutes = require('./routes/peer');
