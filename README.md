@@ -17,6 +17,9 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
 
 # TODO:
 - Integrate MariaDB functionality
+- IP Location
+- SSL Checking
+- Public Node checking
 - Do frontend
 - Unit Testing
 
