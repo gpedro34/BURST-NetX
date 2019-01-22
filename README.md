@@ -3,11 +3,15 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
 
 # DONE:
 - API calls flow:
-  - GET:
-    - all peers - paginated (max 250 records) (localhost:3000/peers/:start/:howmany)
   - POST:
-    - peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
+    - peers / peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
       ```
+      {	"requestType": "peers",	"start": 1,	"howMany": 300} -> start = 1; howMany = 250
+        or
+      {	"requestType": "peers",	"start": 1,	"howMany": 200} -> start = 1; howMany = 200
+        or
+      {	"requestType": "peers"}                             -> start = 0; howMany = 100
+        or
       {"requestType": "peersbyPlatform","platform": "brs"}
         or
       {"requestType": "peersbyVersion","version": "1.1.1"}

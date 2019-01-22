@@ -12,15 +12,15 @@ app.use(bodyParser.json());
 
 // API Routes
 const peersRoutes = require('./routes/peers');
-  // Get all peers
-  app.get('/api/peers/:start/:howmany', peersRoutes.peers);
-  // Get peers by Platform, Version or Hight
-  /* Takes a POST with raw JSON like:
-    {"requestType": "peersbyPlatform","platform": "brs"} or
-    {"requestType": "peersbyVersion","version": "1.1.1"} or
-    {"requestType": "peersbyHeight","platform": "brs"}
-  */
+  // Get all peers or peers by Platform, Version or Height
   app.post('/api/peers', peersRoutes.peersPost);
+  /* Takes a POST with raw JSON like:
+    {"requestType": "peersByPlatform","platform": "brs"} or
+    {"requestType": "peersByVersion","version": "1.1.1"} or
+    {"requestType": "peersByHeight","platform": 500000} or
+    {"requestType": "peers","start": 100,"amount": "200"} or
+    {"requestType": "peers"} - for default values (start:0; amount:100)
+  */
 const peerRoutes = require('./routes/peer');
   // Get peer by ID or address
   /* Takes a POST with raw JSON like:

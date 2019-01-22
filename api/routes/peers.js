@@ -1,29 +1,28 @@
 'use strict';
 
 // Get all peers
-exports.peers = (req, res) => {
-  let firstIndex = req.params.start;
-  let amount = req.params.howmany;
+const peers = async (firstIndex, amount) => {
   // Get all peers from db
   if(firstIndex && amount){
     if(amount > 250){
       amount = 250;
     }
-    // TODO: get peers from DB
-
   } else {
     amount = 100;
+    firstIndex = 0;
   }
+  // TODO: get peers from DB
 
   // Ex. of how should be the object coming out of this function
-  res.send({
+  const obj = {
     peers:[
-      {address: 'id'},
+      {address: firstIndex},
       {address: 'id'},
       {address: '...'},
-      {address: '100'}
+      {address: firstIndex+amount}
     ]
-  })
+  }
+  return obj;
 }
 
 // Get peers by Platform
@@ -48,10 +47,12 @@ const peersByPlatform = async (platform) => {
 /*{
     platforms:[
       {
+        platform: '',
         addresses:['addresses in here','...','addresses in here']
       },
       ...
       ,{
+        platform: '',
         addresses:['addresses in here','...','addresses in here']
       }
     ]
@@ -92,20 +93,18 @@ const peersByHeight = async (height) => {
 exports.peersPost = async (req, res, next) => {
   let obj = {};
   if(req.body.requestType === 'peersbyPlatform'){
-    obj = await peersByPlatform(req.body.platform)
-    // Send the results
-    res.send(obj);
+    obj = await peersByPlatform(req.body.platform);
   } else if(req.body.requestType === 'peersbyVersion'){
-    obj = await peersByVersion(req.body.version)
-    // Send the results
-    res.send(obj);
+    obj = await peersByVersion(req.body.version);
   } else if(req.body.requestType === 'peersbyHeight'){
-    obj = await peersByHeight(req.body.height)
+    obj = await peersByHeight(req.body.height);
+  } else if(req.body.requestType === 'peers'){
+    obj = await peers(req.body.start, req.body.howMany);
   } else {
     const error = new Error('Not a valid API call');
     error.status = 404;
     error.message = 'Not a valid API call';
-    next(error)
+    next(error);
   }
   // Send the results
   res.send(obj);
