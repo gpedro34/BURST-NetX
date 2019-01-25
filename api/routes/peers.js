@@ -2,7 +2,7 @@
 
 const control = require('./../db/controllers').cPeers;
 const utils = require('./../utils');
-
+const limitPeers = require('./../../config/defaults').webserver.limitPeersPerAPIcall;
 // Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
   // Validates firstIndex
@@ -13,13 +13,13 @@ const peers = async (firstIndex, amount) => {
   }
   // Validates amount (default 25 peers)
   if(typeof amount === 'number'){
-    if(amount > 25){
-      amount = 25;
+    if(amount > limitPeers){
+      amount = limitPeers;
     } else if(amount < 1){
-      amount = 25;
+      amount = limitPeers;
     }
   } else {
-    amount = 25;
+    amount = limitPeers;
   }
   // get peers from DB
   let peers = await control.peers(null, null, amount, firstIndex);
