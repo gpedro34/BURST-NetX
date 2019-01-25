@@ -18,8 +18,8 @@ const peersRoutes = require('./routes/peers');
     {"requestType": "peersByPlatform","platform": "brs"} or
     {"requestType": "peersByVersion","version": "1.1.1"} or
     {"requestType": "peersByHeight","platform": 500000} or
-    {"requestType": "peers","start": 100,"amount": "200"} or
-    {"requestType": "peers"} - for default values (start:0; amount:100)
+    {"requestType": "peers","start": 100,"howMany": "200"} or
+    {"requestType": "peers"} - for default values (start:1; howMany:100)
   */
 const peerRoutes = require('./routes/peer');
   // Get peer by ID or address

@@ -1,3 +1,5 @@
+'use strict';
+
 const peers = require('./mariadb');
 const config = require('./../../config/defaults');
 const utils = require('./../utils');
@@ -13,29 +15,17 @@ const db = require('mysql2/promise').createPool({
 	connectionLimit: process.env.DB_CON_LIMIT || config.mariaDB.maxConnections || 10,
 	//supportBigNumbers: true
 });
-const cPeers = new peers(db);
+exports.cPeers = new peers(db);
+console.log('Connected to MariaDB');
 
 const updater = async () => {
-  utils.VERSIONS = await cPeers.allFrom('scan_versions');
-  utils.PLATFORMS = await cPeers.allFrom('scan_platforms');
+  utils.VERSIONS = await self.cPeers.allFrom('scan_versions');
+  utils.PLATFORMS = await self.cPeers.allFrom('scan_platforms');
+  console.log('Versions and Platforms updated to cache!')
 }
 
-exports.launch = async (id, address, limit, start) => {
+exports.launch = async () => {
   // Update constants VERSIONS and PLATFORMS
   await updater()
   const updaterInterval = setInterval(()=>{updater()}, 1000*60*config.mariaDB.updateConstants);
-  // Get peer(s) basic info by ID or address with limit results per page
-  const peer = await cPeers.peers(id, address, limit, start);
-  let ob = [];
-  peer.forEach(async (el)=>{
-    // Complete peer information
-    const comp = await cPeers.completePeer(el);
-    // Resume Measurements
-    const resume = await utils.resumeMeasurements(comp);
-    ob.push(resume);
-    if(el === peer[peer.length-1]){
-      console.log('Complete query');
-      console.log(ob);
-    }
-  });
 }

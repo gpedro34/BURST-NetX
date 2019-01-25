@@ -1,2 +1,2 @@
 const self = require('./controllers');
-self.launch(null, null, 3, 10);
+self.launch(2, 'wallet.burst-alliance.org', 3, 10);

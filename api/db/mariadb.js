@@ -1,7 +1,5 @@
 'use strict';
 
-const utils = require('./../utils');
-
 class Peers {
 
   constructor(db) {
@@ -60,32 +58,16 @@ class Peers {
 
   async peers(id, address, limit, start) {
     const dbc = await this.db.getConnection();
-    let query, arr;
-    if(id > 0){
-      // id validation
-      query = 'SELECT * '
-            + 'FROM peers '
-            + 'WHERE id = ?';
-      arr = [id];
-    } else if (typeof address === 'string' && address.length > 20) {
-      // address validation
-      query = 'SELECT * '
-            + 'FROM peers '
-            + 'WHERE address = ?';
-      arr = [address];
-    } else {
-      // Limit records validation
-      if(typeof limit === 'number'){
-        if(limit < 1){
-          limit = 10;
-        } else if(limit > 50){
-          limit = 50;
-        }
-      } else {
-        limit = 25;
-      }
-      query = 'SELECT * FROM peers ';
-      arr = [];
+    let query = 'SELECT * FROM peers ';
+    let arr = [];
+    if (address) {
+      query += 'WHERE address = ?';
+      arr.push(address);
+    } else if(id){
+      query += 'WHERE id = ?';
+      arr.push(id);
+    } else if (limit){
+      query += 'WHERE id BETWEEN '+start+' AND '+(limit+start+1);
     }
     let ob = [];
   	try {
@@ -94,27 +76,47 @@ class Peers {
       if(!start){
         start = 1;
       }
-      for(let a = 1; 0 <= limit+start; a++){
-        if(res[a].id >= start-1){
+      if(res[0]){
+        if(id || address){
           ob.push({
-            id: res[a].id,
-            address: res[a].address,
-            blocked: res[a].blocked,
-            discovered: res[a].first_seen,
-            lastSeen: res[a].last_seen,
-            lastScanned: res[a].last_scanned
+            id: res[0].id,
+            address: res[0].address,
+            blocked: res[0].blocked,
+            discovered: res[0].first_seen,
+            lastSeen: res[0].last_seen,
+            lastScanned: res[0].last_scanned
           });
-          limit--;
+          dbc.release();
+          return ob;
+        } else {
+          res.forEach((el)=>{
+            if(el.id >= start && el.id <= limit+start){
+              ob.push({
+                id: el.id,
+                address: el.address,
+                blocked: el.blocked,
+                discovered: el.first_seen,
+                lastSeen: el.last_seen,
+                lastScanned: el.last_scanned
+              });
+            }
+          });
+          dbc.release();
+          return ob;
         }
+      } else {
+        ob.push({
+          error: 'There is no peer with such address or id... Peers use notation: "domain.com:8123"/"123.123.123.123:8123"'
+        });
+        dbc.release();
+        return ob;
       }
     } catch(err){
       console.log('Errored');
       console.log(err);
-      return ;
-    } finally {
-  		dbc.release();
-      return ob;
-  	}
+      dbc.release();
+      return;
+    }
   }
 
   async completePeer(peer) {
@@ -131,7 +133,7 @@ class Peers {
         measurements: []
       }
       scan.forEach((row)=>{
-        ob.measurements.push([row.timestamp, row.result, row.rtt, row.blockHeight, utils.getVersion(row.versionId), utils.getPlatform(row.platformId)])
+        ob.measurements.push([row.timestamp, row.result, row.rtt, row.blockHeight, require('./../utils').getVersion(row.versionId), require('./../utils').getPlatform(row.platformId)])
       });
       return ob;
     } else {

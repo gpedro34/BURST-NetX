@@ -1,31 +1,32 @@
 'use strict';
 
-// Get all peers
+const control = require('./../db/controllers').cPeers;
+const utils = require('./../utils');
+
+// Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
-  // Get all peers from db
-  if(firstIndex && amount){
-    if(amount > 250){
-      amount = 250;
+  // Validates firstIndex
+  if(typeof firstIndex !== 'number' && firstIndex >= 1){
+    return {
+      error: 'ID to start from is invalid. IDs start at 1'
+    }
+  }
+  // Validates amount (default 25 peers)
+  if(typeof amount === 'number'){
+    if(amount > 25){
+      amount = 25;
+    } else if(amount < 1){
+      amount = 25;
     }
   } else {
-    amount = 100;
-    firstIndex = 0;
+    amount = 25;
   }
-  // TODO: get peers from DB
-
-  // Ex. of how should be the object coming out of this function
-  const obj = {
-    peers:[
-      {address: firstIndex},
-      {address: 'id'},
-      {address: '...'},
-      {address: firstIndex+amount}
-    ]
-  }
-  return obj;
+  // get peers from DB
+  let peers = await control.peers(null, null, amount, firstIndex);
+  return peers;
 }
 
-// Get peers by Platform
+// TODO: Get peers by Platform
 const peersByPlatform = async (platform) => {
   // TODO: Get peers by platform from DB
   if(platform){
@@ -39,9 +40,8 @@ const peersByPlatform = async (platform) => {
 
   // Ex. of how should be the object coming out of this function
   let obj = {
-    platform:{
+      platform: 'Q2-MariaDB',
       addresses:['addresses in here','...','addresses in here']
-    }
   }
   // or :
 /*{
@@ -59,7 +59,7 @@ const peersByPlatform = async (platform) => {
   }*/
   return obj;
 }
-// Get peers by Version
+// TODO: Get peers by Version
 const peersByVersion = async (version) => {
   // TODO: Get peers by version from DB
 
@@ -67,14 +67,14 @@ const peersByVersion = async (version) => {
   let obj = {
     versions:[
       {
-        version:"name",
+        version:"1.1.1",
         addresses:['addresses in here','...','addresses in here']
       }
     ]
   }
   return obj;
 }
-// Get peers by Height
+// TODO: Get peers by Height
 const peersByHeight = async (height) => {
   // TODO: Get peers by height from DB
 
@@ -90,22 +90,59 @@ const peersByHeight = async (height) => {
   return obj;
 }
 // Handles the POST request
-exports.peersPost = async (req, res, next) => {
+exports.peersPost = async (req, res) => {
   let obj = {};
-  if(req.body.requestType === 'peersbyPlatform'){
-    obj = await peersByPlatform(req.body.platform);
-  } else if(req.body.requestType === 'peersbyVersion'){
-    obj = await peersByVersion(req.body.version);
-  } else if(req.body.requestType === 'peersbyHeight'){
-    obj = await peersByHeight(req.body.height);
-  } else if(req.body.requestType === 'peers'){
-    obj = await peers(req.body.start, req.body.howMany);
+  let ob = {
+    peers:[]
+  };
+  if(req.body.requestType){
+    switch(req.body.requestType){
+      case 'peersbyPlatform':
+        obj = await peersByPlatform(req.body.platform);
+        break;
+      case 'peersbyVersion':
+        obj = await peersByVersion(req.body.version);
+        break;
+      case 'peersbyHeight':
+        obj = await peersByHeight(req.body.height);
+        break;
+      case 'peers':
+        obj = await peers(req.body.start, req.body.howMany);
+        break;
+    }
+    if(obj){
+      if(obj.error){
+        // Send the results
+        res.send(obj);
+        return;
+      }
+      obj.forEach(async (el)=>{
+        // Complete peer information
+        const comp = await control.completePeer(el);
+        // Resume Measurements
+        const resume = await utils.resumeMeasurements(comp);
+        ob.peers.push(resume);
+        if(el === obj[obj.length-1]){
+          // Send the results
+          res.send(ob);
+          return;
+        }
+      });
+    } else {
+      ob = {
+        error: 'Something went wrong'
+      }
+      // Send the error as JSON
+      res.send(ob);
+      return;
+    }
   } else {
-    const error = new Error('Not a valid API call');
-    error.status = 404;
-    error.message = 'Not a valid API call';
-    next(error);
+    ob = {
+      error: 'Not a valid API call'
+    }
+    // Send the error as JSON
+    res.send(ob);
+    return;
   }
-  // Send the results
-  res.send(obj);
+
 }

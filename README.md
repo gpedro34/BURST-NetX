@@ -5,22 +5,20 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
 - API calls flow:
 1. POST:
 * peers / peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
-  - {	"requestType": "peers",	"start": 1,	"howMany": 300} -> start = 1; howMany = 250
-  - {	"requestType": "peers",	"start": 1,	"howMany": 200} -> start = 1; howMany = 200
-  - {	"requestType": "peers"}                             -> start = 0; howMany = 100
-  - {"requestType": "peersbyPlatform","platform": "brs"}
-  - {"requestType": "peersbyVersion","version": "1.1.1"}
-  - {"requestType": "peersbyHeight","platform": "brs"}
+  - {	"requestType": "peers",	"start": 1,	"howMany": 30}  -> start = 1; howMany = 25
+  - {	"requestType": "peers",	"howMany": 20}              -> start = 1; howMany = 20
+  - {	"requestType": "peers"}                             -> start = 1; howMany = 25
 * peerById / peerByAddress (localhost:3000/peer/)
   - {"id": 1}
   - {"address": "123.123.123.123:8123"}
 
 # TODO:
-- Integrate MariaDB functionality
-- IP Location
-- SSL Checking
-- Public Node checking
-- Do frontend
+- Integrate POST calls:
+  - {"requestType": "peersbyPlatform","platform": "brs"}
+  - {"requestType": "peersbyVersion","version": "1.1.1"}
+  - {"requestType": "peersbyHeight","height": 500000}
+- IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
+- Frontend
 - Unit Testing
 
 # Sugestions
