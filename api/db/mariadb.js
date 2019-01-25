@@ -49,7 +49,7 @@ class Peers {
     } catch(err){
       console.log('Errored');
       console.log(err);
-      return ;
+      return;
     } finally {
   		dbc.release();
       return ob;
@@ -106,7 +106,7 @@ class Peers {
         }
       } else {
         ob.push({
-          error: 'There is no peer with such address or id... Peers use notation: "domain.com:8123"/"123.123.123.123:8123"'
+          error: 'There is no peer with such address or ID'
         });
         dbc.release();
         return ob;
@@ -137,7 +137,10 @@ class Peers {
       });
       return ob;
     } else {
-      scan = await cPeers.allFrom('scans');
+      if(peer.error){
+        return peer;
+      }
+      scan = await this.allFrom('scans');
     }
   }
 

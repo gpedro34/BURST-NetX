@@ -6,7 +6,7 @@ const limitPeers = require('./../../config/defaults').webserver.limitPeersPerAPI
 // Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
   // Validates firstIndex
-  if(typeof firstIndex !== 'number' && firstIndex >= 1){
+  if(typeof firstIndex !== 'number' || firstIndex < 1){
     return {
       error: 'ID to start from is invalid. IDs start at 1'
     }
@@ -112,15 +112,25 @@ exports.peersPost = async (req, res) => {
     }
     if(obj){
       if(obj.error){
-        // Send the results
+        // Send the error
         res.send(obj);
         return;
       }
       obj.forEach(async (el)=>{
         // Complete peer information
         const comp = await control.completePeer(el);
+        if(comp.error){
+          // Send the error
+          res.send(comp);
+          return;
+        }
         // Resume Measurements
         const resume = await utils.resumeMeasurements(comp);
+        if(resume.error){
+          // Send the error
+          res.send(resume);
+          return;
+        }
         ob.peers.push(resume);
         if(el === obj[obj.length-1]){
           // Send the results
@@ -129,19 +139,14 @@ exports.peersPost = async (req, res) => {
         }
       });
     } else {
-      ob = {
-        error: 'Something went wrong'
-      }
+      console.log('Something went wrong with DB call - Exception 1');
       // Send the error as JSON
-      res.send(ob);
+      res.send({error: 'Something went wrong'});
       return;
     }
   } else {
-    ob = {
-      error: 'Not a valid API call'
-    }
     // Send the error as JSON
-    res.send(ob);
+    res.send({error: 'Not a valid API call'});
     return;
   }
 

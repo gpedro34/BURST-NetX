@@ -44,7 +44,7 @@ exports.getPlatform = (id) => {
 	}
   return pl;
 }
-// Resume scans
+// Resume scan measurements
 exports.resumeMeasurements = async (ob) => {
 	const arr = ob.measurements;
 	let failCount = 0;
@@ -53,48 +53,52 @@ exports.resumeMeasurements = async (ob) => {
 	let avgCheck = 0;
 	let uptime = 0;
 	let lastRec, state;
-	arr.forEach((el)=>{
-		if(el[1] !== 0){
-			failCount++;
-			if(el[1] === 1){
-				state = 'Unknown error';
-			} else if(el[1] === 2){
-				state = 'Timed out';
-			} else if(el[1] === 3){
-				state = 'Refused';
-			} else if(el[1] === 4){
-				state = 'Wallet is redirecting P2P port traffic';
+	if(arr){
+		arr.forEach((el)=>{
+			if(el[1] !== 0){
+				failCount++;
+				if(el[1] === 1){
+					state = 'Unknown error';
+				} else if(el[1] === 2){
+					state = 'Timed out';
+				} else if(el[1] === 3){
+					state = 'Refused';
+				} else if(el[1] === 4){
+					state = 'Wallet is redirecting P2P port traffic';
+				}
+			} else {
+				state = 'Online and synced';
 			}
-		} else {
-			state = 'Online and synced';
-		}
-		avgRtt += Number(el[2]);
-		if(!lastRec){
-			lastRec = el;
-			totalCount++;
-		} else {
-			totalCount++;
-			avgCheck += Math.abs(new Date(el[0]) - new Date(lastRec[0]))/1000/60;
-			lastRec = el;
-		}
-		if (el === arr[arr.length-1]){
-			avgRtt = Math.floor(avgRtt / totalCount * 100) / 100;
-			avgCheck = Math.floor(avgCheck / totalCount * 100) / 100;
-			uptime = Math.floor((totalCount-failCount)/totalCount * 100 * 100) / 100;
-			if(typeof el[3] !== 'number'){
-				el[3] = 0;
+			avgRtt += Number(el[2]);
+			if(!lastRec){
+				lastRec = el;
+				totalCount++;
+			} else {
+				totalCount++;
+				avgCheck += Math.abs(new Date(el[0]) - new Date(lastRec[0]))/1000/60;
+				lastRec = el;
 			}
-			ob.measurements = {
-				averageRtt: avgRtt, 					// in miliseconds
-				averageCheck: avgCheck,				// in minutes
-				timesChecked: totalCount,			// integer
-				uptime: uptime,								// percentage without '%'
-				height: el[3],								// current height
-				version: el[4],								// current version
-				platform: el[5],							// current platform
-				state: state									// current state
+			if (el === arr[arr.length-1]){
+				avgRtt = Math.floor(avgRtt / totalCount * 100) / 100;
+				avgCheck = Math.floor(avgCheck / totalCount * 100) / 100;
+				uptime = Math.floor((totalCount-failCount)/totalCount * 100 * 100) / 100;
+				if(typeof el[3] !== 'number'){
+					el[3] = 0;
+				}
+				ob.measurements = {
+					averageRtt: avgRtt, 					// in miliseconds
+					averageCheck: avgCheck,				// in minutes
+					timesChecked: totalCount,			// integer
+					uptime: uptime,								// percentage without '%'
+					height: el[3],								// current height
+					version: el[4],								// current version
+					platform: el[5],							// current platform
+					state: state									// current state
+				}
 			}
-		}
-	})
+		})
+	} else {
+		ob = {error: 'Invalid ID or address'};
+	}
 	return ob;
 }
