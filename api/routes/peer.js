@@ -1,22 +1,10 @@
 'use strict';
+
 const db = require('./../db/mariadb');
 const utils = require('./../utils');
 
 const control = require('./../db/controllers').cPeers;
 
-// Get peer by ID
-const peerById = async (id) => {
-  // Get peer by ID from DB
-  let peer = await control.peers(id)
-  console.log(peer);
-  return peer;
-}
-// Get peer by Address
-const peerByAddress = async (address) => {
-  // Get peer by address from DB
-  let peer = await control.peers(null, address)
-  return peer;
-}
 // Handles the POST request
 exports.peerPost = async (req, res) => {
   let obj = {};
@@ -42,7 +30,6 @@ exports.peerPost = async (req, res) => {
   const comp = await control.completePeer(obj[0]);
   // Resume Measurements
   const resume = await utils.resumeMeasurements(comp);
-  // console.log(resume);
   // Send the results
   res.send(resume);
 }
