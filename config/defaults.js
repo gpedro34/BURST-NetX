@@ -14,3 +14,11 @@ exports.webserver = {
   "port": 3000,                 // default: 3000
   "limitPeersPerAPIcall": 25    // default 25 - max ampunt of results provided through API calls
 };
+
+// BRS related configuration
+exports.brs = {
+  "timeout": 10000,             // Default 10 sec
+  "userAgent": 'BRS/9.9.9',     // Can be used to test how different wallets talk to each other
+  "peerPort": 8123,             // Default peer port (default 8123) 
+  "apiPort": 8125               // Default api port (default 8125)
+}

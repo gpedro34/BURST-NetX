@@ -2,6 +2,7 @@
 NetX is an API, that hopefully will have a frontend in the future for a Explorer of the BURST network...
 
 # DONE:
+- IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
 - API calls flow:
 1. POST:
 * peers / peersByPlatform / peersByVersion / peersByHeight (localhost:3000/peers/)
@@ -17,9 +18,11 @@ NetX is an API, that hopefully will have a frontend in the future for a Explorer
   - {"requestType": "peersbyPlatform","platform": "brs"}
   - {"requestType": "peersbyVersion","version": "1.1.1"}
   - {"requestType": "peersbyHeight","height": 500000}
-- IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
 - Frontend
 - Unit Testing
 
 # Sugestions
 If you have a sugestion, do a commit to the SUGESTIONS.md file in this directory, I'll look into it...
+
+# NOTES
+- SSL check only checks for time validity of certificate (needs a disclaimer on the site with a link for a deeper analisys like https://globalsign.ssllabs.com/analyze.html?d=wallet.burst-alliance.org)

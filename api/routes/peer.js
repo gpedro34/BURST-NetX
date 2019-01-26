@@ -2,6 +2,8 @@
 
 const db = require('./../db/mariadb');
 const utils = require('./../utils');
+const ssl = require('./../brs/ssl');
+const brs = require('./../brs/calls');
 
 const control = require('./../db/controllers').cPeers;
 
@@ -30,6 +32,9 @@ exports.peerPost = async (req, res) => {
   const comp = await control.completePeer(obj[0]);
   // Resume Measurements
   const resume = await utils.resumeMeasurements(comp);
+  // SSL, location and wallet check
+  const walletData = await ssl.checkNode(brs.normalizeAPI(resume.address, true));
+  resume.info = walletData;
   // Send the results
   res.send(resume);
 }
