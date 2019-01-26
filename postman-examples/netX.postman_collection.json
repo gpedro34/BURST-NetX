@@ -52,7 +52,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"id\": 1\n}"
+					"raw": "{\n\t\"id\": 88\n}"
 				},
 				"url": {
 					"raw": "127.0.0.1:3000/api/peer",
