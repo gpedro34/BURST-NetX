@@ -19,13 +19,12 @@ node server.js
 
 # DONE:
 - IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
-- API calls flow:
-1. POST:
-* peers (localhost:3000/peers/)
+- API calls:
+* peers (POST localhost:3000/peers/)
   - {	"requestType": "peers",	"start": 10,	"howMany": 30}  -> start = 10; howMany = 25
   - {	"requestType": "peers",	"howMany": 20}                -> start = 1; howMany = 20
   - {	"requestType": "peers"}                               -> start = 1; howMany = 25
-* peer (by ID or Address) (localhost:3000/peer/)
+* peer (by ID or Address) (POST localhost:3000/peer/)
   - {"id": 1}                                               -> search by ID
   - {"address": "123.123.123.123:8123"}                     -> search by Address
   - {"id": 1, "address": "123.123.123.123:8123"}            -> search by ID
