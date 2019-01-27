@@ -29,12 +29,12 @@ mysql brs_crawler -u netX -pnetX < brs_crawler.sql
 npm run server
 or
 node server.js
-- Launch this repo with NodeJS and fronend:
-  - Run on terminal:
 ```
+- Launch this repo with NodeJS and Frontend:
+  - Run on terminal:
 
+```
 npm start
-
 ```
 
 - Import Postman examples into Postman and test the API calls
