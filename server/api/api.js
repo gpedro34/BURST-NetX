@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 
 //CORS middleware
 const allowCrossDomain = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'localhost:5000');
+  res.header('Access-Control-Allow-Origin', 'localhost:3000');
   res.header('Access-Control-Allow-Methods', 'POST');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
 
