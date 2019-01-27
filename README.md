@@ -18,7 +18,7 @@ CREATE SCHEMA `brs_crawler` DEFAULT CHARACTER SET utf8mb4 ;
 CREATE USER 'netX'@'localhost' IDENTIFIED BY 'netX';
 GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 ```
-- [Download bootstrap file](https://drive.google.com/open?id=1xMMO0rq5mDuvj8Y1lHHzXG8RivPzfqEs) for provisional db from 
+- [Download bootstrap file](https://drive.google.com/open?id=1xMMO0rq5mDuvj8Y1lHHzXG8RivPzfqEs) for provisional db from
 - Run on terminal (in the folder where you have brs_crawler.sql file downloaded from link above):
 ```
 mysql brs_crawler -u netX -pnetX < brs_crawler.sql
@@ -26,15 +26,8 @@ mysql brs_crawler -u netX -pnetX < brs_crawler.sql
 - Launch this repository with NodeJS:
   - Run on terminal:
 ```
-npm run server
-or
-node server.js
-- Launch this repo with NodeJS and fronend:
-  - Run on terminal:
-```
-
+npm run setup
 npm start
-
 ```
 
 - Import Postman examples into Postman and test the API calls
@@ -64,4 +57,4 @@ npm start
 If you have a feature request, do a commit to the SUGESTIONS.md file in this directory.
 
 # CONTRIBUTING
-PRs are appreciated but if you want to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network...
+PRs and commits are appreciated but if you want to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network...

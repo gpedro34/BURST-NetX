@@ -1,7 +1,7 @@
 'use strict';
 
 const peers = require('./mariadb');
-const config = require('./../../config/defaults');
+const config = require('./../../../config/defaults');
 const utils = require('./../utils');
 
 const self = require('./controllers');

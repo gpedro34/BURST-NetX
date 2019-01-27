@@ -12,6 +12,7 @@ class Peers {
     try {
       await dbc.beginTransaction();
       let res;
+
       if(id){
         if(table === 'scans'){
           [res] = await dbc.execute('SELECT * from '+table+' WHERE peer_id = ?', [id]);
@@ -144,5 +145,51 @@ class Peers {
     }
   }
 
+  async platforms(id, platform){
+    const dbc = await this.db.getConnection();
+    let res;
+    await dbc.beginTransaction();
+    try{
+      if(id){
+        [res] = await dbc.execute('SELECT * from scan_platforms WHERE id = ?', [id]);
+      } else if(platform) {
+        [res] = await dbc.execute('SELECT * from scan_platforms WHERE platform = ?', [platform]); // need tests
+      }
+      dbc.release();
+      if(res[0]){
+        return [{
+          id: res[0].id,
+          platform: res[0].platform
+        }];
+      } else {
+        return {error: 'There is no platform with that Name/ID'}
+      }
+    }catch(err){
+      console.log(err);
+      return {error: 'There is no platform with that Name/ID'}
+    }
+  }
+
+  async getPeersByPlatformId(id){
+    const dbc = await this.db.getConnection();
+    let res, resP;
+    let ob = [{id:0}];
+    await dbc.beginTransaction();
+    try{
+      [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE platform_id = ?', [id]);
+      res.forEach(async (el)=>{
+        [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [el.peer_id]);
+        ob.push({id:el.peer_id, address: resP[0].address});
+        if(el === res[res.length-1]){
+          dbc.release();
+          ob.splice(0, 1);
+          console.log(ob); // have complete records in here need to arrange a way of passing them further
+        }
+      });
+      return ob; // not returning together
+    }catch(err){
+      console.log(err)
+    }
+  }
 }
 module.exports = Peers;

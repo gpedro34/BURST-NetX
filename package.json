@@ -10,9 +10,10 @@
     "crawler"
   ],
   "scripts": {
-    "server": "node server.js",
+    "server": "node server/server.js",
     "client": "npm start --prefix client",
-    "start": "concurrently \"npm run server\" \"npm run client\""
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "setup": "npm install && cd client && npm install && cd .."
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",

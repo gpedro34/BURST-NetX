@@ -2,7 +2,7 @@
 
 const control = require('./../db/controllers').cPeers;
 const utils = require('./../utils');
-const limitPeers = require('./../../config/defaults').webserver.limitPeersPerAPIcall;
+const limitPeers = require('./../../../config/defaults').webserver.limitPeersPerAPIcall;
 // Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
   // Validates firstIndex
@@ -26,38 +26,27 @@ const peers = async (firstIndex, amount) => {
   return peers;
 }
 
-// TODO: Get peers by Platform
-const peersByPlatform = async (platform) => {
-  // TODO: Get peers by platform from DB
+// Get peers by Platform
+const peersByPlatform = async (id, platform) => {
+  // Gets platform from DB
+  let plat;
   if(platform){
-    // Just this one
-
+    // Search by platform
+    plat = await control.platforms(null, platform);
   } else {
-    // All of them
+    // Search by platform ID
+    plat = await control.platforms(id, null);
   }
-
-
-
-  // Ex. of how should be the object coming out of this function
-  let obj = {
-      platform: 'Q2-MariaDB',
-      addresses:['addresses in here','...','addresses in here']
+  if(plat[0]){
+    const peers = await control.getPeersByPlatformId(plat[0].id);
+    return {
+        platform: plat[0].platform,
+        id: plat[0].id,
+        peers: peers
+    };
+  } else {
+    return plat
   }
-  // or :
-/*{
-    platforms:[
-      {
-        platform: '',
-        addresses:['addresses in here','...','addresses in here']
-      },
-      ...
-      ,{
-        platform: '',
-        addresses:['addresses in here','...','addresses in here']
-      }
-    ]
-  }*/
-  return obj;
 }
 // TODO: Get peers by Version
 const peersByVersion = async (version) => {
@@ -98,7 +87,7 @@ exports.peersPost = async (req, res) => {
   if(req.body.requestType){
     switch(req.body.requestType){
       case 'peersbyPlatform':
-        obj = await peersByPlatform(req.body.platform);
+        obj = await peersByPlatform(req.body.id, req.body.platform);
         break;
       case 'peersbyVersion':
         obj = await peersByVersion(req.body.version);
@@ -116,28 +105,39 @@ exports.peersPost = async (req, res) => {
         res.send(obj);
         return;
       }
-      obj.forEach(async (el)=>{
-        // Complete peer information
-        const comp = await control.completePeer(el);
-        if(comp.error){
-          // Send the error
-          res.send(comp);
-          return;
+      if(req.body.requestType !== 'peersbyPlatform' && req.body.requestType !== 'peersbyVersion' && req.body.requestType !== 'peersbyHeight'){
+        // for peers APi call
+        obj.forEach(async (el)=>{
+          // Complete peer information
+          const comp = await control.completePeer(el);
+          if(comp.error){
+            // Send the error
+            res.send(comp);
+            return;
+          }
+          // Resume Measurements
+          const resume = await utils.resumeMeasurements(comp);
+          if(resume.error){
+            // Send the error
+            res.send(resume);
+            return;
+          }
+          ob.peers.push(resume);
+          if(el === obj[obj.length-1]){
+            // Send the results
+            res.send(ob);
+            return;
+          }
+        });
+      } else {
+        // for peersbyPlatform, peersByVersion, peersByHeight API calls
+        if(obj.error){
+          res.send(obj);
         }
-        // Resume Measurements
-        const resume = await utils.resumeMeasurements(comp);
-        if(resume.error){
-          // Send the error
-          res.send(resume);
-          return;
-        }
-        ob.peers.push(resume);
-        if(el === obj[obj.length-1]){
-          // Send the results
-          res.send(ob);
-          return;
-        }
-      });
+        console.log('In Post: ',obj) // missing complete object in here
+
+      }
+
     } else {
       console.log('Something went wrong with DB call - Exception 1');
       // Send the error as JSON
