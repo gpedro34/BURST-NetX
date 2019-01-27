@@ -13,6 +13,10 @@ GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 - Launch this repo with NodeJS:
   - Run on terminal:
 ```
+npm start
+```
+or
+```
 node server.js
 ```
 - Import Postman examples into Postman and test the API calls
