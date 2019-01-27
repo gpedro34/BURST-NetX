@@ -6,9 +6,19 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
+//CORS middleware
+const allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', 'localhost');
+    res.header('Access-Control-Allow-Methods', 'POST');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+    next();
+}
+
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use(allowCrossDomain);
 
 // API Routes
 const peersRoutes = require('./routes/peers');
