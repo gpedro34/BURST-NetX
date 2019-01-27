@@ -15,7 +15,7 @@ const allowCrossDomain = (req, res, next) => {
 
   next();
 }
-}
+
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}));
