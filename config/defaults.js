@@ -11,7 +11,7 @@ exports.mariaDB = {
 };
 
 exports.webserver = {
-  "port": 3000,                 // default: 3000
+  "port": 5000,                 // default: 5000
   "limitPeersPerAPIcall": 25    // default 25 - max ampunt of results provided through API calls
 };
 
