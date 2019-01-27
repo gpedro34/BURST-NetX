@@ -1,17 +1,29 @@
-# BURST-NetX
+# BURST-NetX (Beta-stage)
 NetX is an API, that hopefully will have a frontend in the near future for a Explorer of the BURST network...
 
+# REQUIREMENTS
+- mysql shell installed and added to systempath as 'mysql' (tested with v8.0.14)(see https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-shell-install-windows-quick.html and https://www.computerhope.com/issues/ch000549.htm )
+- NodeJS (tested with v11.6.0)
+- MariaDB (tested with v10.1.29)
+
 # LAUNCH
-- Download a provisional DB for tests from https://drive.google.com/open?id=1dqdwoJ3TSzwfNiHPfMEt4niCLCwi5KpH
-- Extract it
-- Put that DB folder into your path_to_MariaDB/data/
+- Create DB 'brs_crawler':
+  - Run SQL:
+```
+CREATE SCHEMA `brs_crawler` DEFAULT CHARACTER SET utf8mb4 ;
+```
 - create user 'NetX' and grant all privileges on db 'brs_crawler':
   - Run SQL:
 ```
 CREATE USER 'netX'@'localhost' IDENTIFIED BY 'netX';
 GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 ```
-- Launch this repo with NodeJS:
+- Download bootstrap file for provisional db from https://drive.google.com/open?id=1xMMO0rq5mDuvj8Y1lHHzXG8RivPzfqEs
+- Run on terminal (in the folder where you have brs_crawler.sql file downloaded from link above):
+```
+mysql brs_crawler -u netX -pnetX < brs_crawler.sql
+```
+- Launch this repository with NodeJS:
   - Run on terminal:
 ```
 npm start
