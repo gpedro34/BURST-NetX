@@ -10,12 +10,15 @@
     "crawler"
   ],
   "scripts": {
-    "start": "node server.js"
+    "server": "node server.js",
+    "client": "npm start --prefix client",
+    "start": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "concurrently": "^4.1.0",
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "iplocation": "^6.1.0",
