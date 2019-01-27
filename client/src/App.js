@@ -23,7 +23,7 @@ class App extends Component {
     isLoaded: false,
     apiAnswer: ""
    } 
-  this.requestt = this.requestt.bind(this); 
+  
   }
   componentDidMount() {
     var data = JSON.stringify({
@@ -46,9 +46,8 @@ class App extends Component {
     
     xhr.send(data);
        } 
-  requestt(){
-  return request(options);
-}   
+ 
+ 
     
   render() {
    
