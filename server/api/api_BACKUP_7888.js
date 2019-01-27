@@ -6,15 +6,22 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-
 //CORS middleware
+<<<<<<< HEAD
+const allowCrossDomain = function(req, res, next) {
+<<<<<<< HEAD
+    res.header('Access-Control-Allow-Origin', 'localhost');
+=======
+    res.header('Access-Control-Allow-Origin', 'localhost:5000');
+>>>>>>> bd488e1ca1f06f99d03d9dae133c5733c829b1be
+=======
 const allowCrossDomain = (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'localhost:5000');
-  res.header('Access-Control-Allow-Methods', 'POST');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Origin', 'localhost:5000');
+>>>>>>> 9939a43113260dbfff4586f205b2c810cc376e33
+    res.header('Access-Control-Allow-Methods', 'POST');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-  next();
-}
+    next();
 }
 
 app.use(morgan('dev'));
