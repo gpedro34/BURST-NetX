@@ -13,23 +13,28 @@ GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 - Launch this repo with NodeJS:
   - Run on terminal:
 ```
-npm start
-```
+npm run server
 or
-```
 node server.js
+- Launch this repo with NodeJS and fronend:
+  - Run on terminal:
 ```
+
+npm start
+
+```
+
 - Import Postman examples into Postman and test the API calls
 - Please report issues in the issues tab and if you are keen to it, contributions are appreciated.
 
 # DONE:
 - IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
 - API calls:
-* peers (POST localhost:3000/peers/)
+* peers (POST localhost:5000/peers/)
   - {	"requestType": "peers",	"start": 10,	"howMany": 30}  -> start = 10; howMany = 25
   - {	"requestType": "peers",	"howMany": 20}                -> start = 1; howMany = 20
   - {	"requestType": "peers"}                               -> start = 1; howMany = 25
-* peer (by ID or Address) (POST localhost:3000/peer/)
+* peer (by ID or Address) (POST localhost:5000/peer/)
   - {"id": 1}                                               -> search by ID
   - {"address": "123.123.123.123:8123"}                     -> search by Address
   - {"id": 1, "address": "123.123.123.123:8123"}            -> search by ID
