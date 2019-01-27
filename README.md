@@ -2,7 +2,7 @@
 NetX is an API, that hopefully will have a frontend in the near future for a Explorer of the BURST network...
 
 # REQUIREMENTS
-- [mysql shell](https://dev.mysql.com/doc/mysql-shell/8.0/en/mysql-shell-install-windows-quick.html) installed and added to [system path](https://www.computerhope.com/issues/ch000549.htm) as 'mysql' (tested with v8.0.14)
+- [mysql shell](https://dev.mysql.com/downloads/windows/installer/8.0.html) installed and added to [system path](https://www.computerhope.com/issues/ch000549.htm) as 'mysql' (tested with v8.0.14)
 - NodeJS (tested with v11.6.0)
 - MariaDB (tested with v10.1.29)
 
