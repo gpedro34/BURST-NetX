@@ -9,7 +9,7 @@ exports.readFileTrim = (file) => {
 	return null;
 };
 
-const config = require('./../config/defaults');
+const config = require('./../../config/defaults');
 const cPeers = require('./db/controllers').cPeers;
 const self = require('./utils');
 

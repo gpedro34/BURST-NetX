@@ -2,7 +2,7 @@
 
 const request = require('request-promise-native');
 
-const def = require('./../../config/defaults');
+const def = require('./../../../config/defaults');
 const self = require('./calls');
 
 exports.BRS_DEFAULT_PEER_PORT = def.brs.peerPort;
