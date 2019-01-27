@@ -3,10 +3,9 @@ import request from 'request';
 import './App.css';
 
 var options = { method: 'POST',
-  url: 'http://127.0.0.1:5000/api/peer',
+  url: 'http://localhost:5000/api/peer',
   headers: 
-   {  'Postman-Token': 'ebf4d973-256f-4d20-abfc-2c5217aa8f91',
-   'cache-control': 'no-cache', 'Content-Type': 'application/json'}, 
+   { 'Content-Type': 'application/json'}, 
   body: { id: 1 },
   
   json: true };
