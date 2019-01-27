@@ -2,7 +2,8 @@
 NetX is an API, that hopefully will have a frontend in the near future for a Explorer of the BURST network...
 
 # LAUNCH
-- Download a provisional DB for tests from https://drive.google.com/open?id=1dfObeGfOX_RmalNaGE77k9ZWnOdOuNZJ
+- Download a provisional DB for tests from https://drive.google.com/open?id=1dqdwoJ3TSzwfNiHPfMEt4niCLCwi5KpH
+- Extract it
 - Put that DB folder into your path_to_MariaDB/data/
 - create user 'NetX' and grant all privileges on db 'brs_crawler':
   - Run SQL:
