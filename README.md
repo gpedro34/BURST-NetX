@@ -43,6 +43,3 @@ If you have a feature request, do a commit to the SUGESTIONS.md file in this dir
 
 # CONTRIBUTING
 PRs are appreciated but if you want to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network...
-
-# NOTES
-- SSL check only checks for time validity of certificate (needs a disclaimer on the site with a link for a deeper analisys like https://globalsign.ssllabs.com/analyze.html?d=wallet.burst.cryptoguru.org)

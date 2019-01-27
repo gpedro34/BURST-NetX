@@ -82,11 +82,31 @@ const domainCheck = async (domain) => {
     } catch(err){
       console.log(err)
     }
-    if(!resSSL || resSSL.error || resSSL.days_remaining <= 0){
+    if(!resSSL || resSSL.error){
       // Invalid SSL
       ob = {
         ip: domain,
         ssl: 'Invalid',
+        api: Number(port),
+        p2p: Number(brs.BRS_DEFAULT_PEER_PORT),
+        city: resLoc.city,
+        country: resLoc.country,
+        region: resLoc.region
+      };
+    } else if(resSSL.days_remaining <= 0){
+      ob = {
+        ip: domain,
+        ssl: 'Expired',
+        api: Number(port),
+        p2p: Number(brs.BRS_DEFAULT_PEER_PORT),
+        city: resLoc.city,
+        country: resLoc.country,
+        region: resLoc.region
+      };
+    } else if(resSSL.valid !== 'valid'){
+      ob = {
+        ip: domain,
+        ssl: 'Certificate with IP mismatches',
         api: Number(port),
         p2p: Number(brs.BRS_DEFAULT_PEER_PORT),
         city: resLoc.city,
