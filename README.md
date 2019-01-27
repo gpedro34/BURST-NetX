@@ -16,6 +16,7 @@ GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 node server.js
 ```
 - Import Postman examples into Postman and test the API calls
+- Please report issues in the issues tab and if you are keen to it, contributions are appreciated.
 
 # DONE:
 - IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
@@ -39,6 +40,9 @@ node server.js
 
 # SUGESTIONS
 If you have a feature request, do a commit to the SUGESTIONS.md file in this directory.
+
+# CONTRIBUTING
+PRs are appreciated but if you want to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network...
 
 # NOTES
 - SSL check only checks for time validity of certificate (needs a disclaimer on the site with a link for a deeper analisys like https://globalsign.ssllabs.com/analyze.html?d=wallet.burst.cryptoguru.org)
