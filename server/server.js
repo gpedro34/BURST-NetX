@@ -1,5 +1,7 @@
 'use strict';
 
+var exit = require('exit');
+
 const app = require('./api/api');
 const control = require('./api/db/controllers');
 
@@ -13,11 +15,11 @@ const server = app.listen(port, () => {
 process.on('SIGINT', () => {
 	console.log(`Shutting down webserver...`);
   server.close();
-  process.exit(0);
+  exit(0);
 });
 
 process.on('SIGTERM', () => {
 	console.log(`Shutting down webserver and DB connection...`);
   server.close();
-	process.exit(0);
+	exit(0);
 });

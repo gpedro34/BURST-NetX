@@ -1,6 +1,6 @@
 {
   "name": "burst-netx",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Network Explorer API and front-end",
   "main": "server.js",
   "keywords": [
@@ -12,16 +12,18 @@
   "scripts": {
     "server": "node server/server.js",
     "client": "npm start --prefix client",
-    "start": "concurrently \"npm run server\" \"npm run client\" --kill-others",
-    "setup": "npm install && cd client && npm install && cd .. && npm start",
+    "start": "node launcher.js",
+    "setup": "npm install && cd client && npm install && cd ..",
     "clean-setup": "bash ./clean-setup.sh"
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chalk": "^2.4.2",
     "concurrently": "^4.1.0",
     "cors": "^2.8.5",
+    "exit": "^0.1.2",
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "iplocation": "^6.1.0",
