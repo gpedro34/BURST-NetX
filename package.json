@@ -12,8 +12,9 @@
   "scripts": {
     "server": "node server/server.js",
     "client": "npm start --prefix client",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "setup": "npm install && cd client && npm install && cd .."
+    "start": "concurrently \"npm run server\" \"npm run client\" --kill-others",
+    "setup": "npm install && cd client && npm install && cd .. && npm start",
+    "clean-setup": "bash ./clean-setup.sh"
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",
