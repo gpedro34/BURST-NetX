@@ -1,8 +1,18 @@
 .App {
   --main-bg-color: #729ce9;
   background-color: var(--main-bg-color);
-  height: 100vh;
+  
   display: flex;
   justify-content: center;
   align-items: center;  
+}
+
+.Table {
+  border: 2px solid red;
+  width: 80vw;
+  
+}
+
+.Item {
+  border: 2px solid rgb(212, 185, 185);
 }
