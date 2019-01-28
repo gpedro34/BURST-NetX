@@ -29,3 +29,5 @@ exports.launch = async () => {
   await updater()
   const updaterInterval = setInterval(()=>{updater()}, 1000*60*config.mariaDB.updateConstants);
 }
+
+module.export = db;
