@@ -30,17 +30,14 @@ mysql brs_crawler -u netX -pnetX < brs_crawler.sql
 npm run setup
 node launcher.js
 ```
-NOTE: See USAGE.md for further information on scripts.
-
-- Import Postman examples into Postman and test the API calls
-- Please report issues in the issues tab and if you are keen to it, contributions are appreciated.
-
+NOTE: [See USAGE.md for further information on scripts](https://github.com/gpedro34/BURST-NetX/blob/master/USAGE.md)
 
 # SUGESTIONS
-If you have a feature request, do a commit to the SUGESTIONS.md file in this directory.
+If you have a feature request, do a commit to the [SUGESTIONS.md file](https://github.com/gpedro34/BURST-NetX/blob/master/SUGESTIONS.md) in this repository.
 
 # CONTRIBUTING
-Report issues in the tracker or by tagging @gpedro in this [Discord](https://discord.gg/2RSeRaG)
-Great PRs and commits get glorious and fame in the CREDITS.md of this repository!
+Report issues in the tracker or by tagging @gpedro in this [Discord](https://discord.gg/2RSeRaG).
+
+Great PRs and commits get glorious and fame in the [CREDITS.md of this repository](https://github.com/gpedro34/BURST-NetX/blob/master/CREDITS.md)!
 
 If you prefer to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network. These funds will be used to fund further development.
