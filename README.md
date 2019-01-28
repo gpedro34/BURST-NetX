@@ -7,6 +7,7 @@ NetX is an API, that hopefully will have a frontend in the near future for a Exp
 - MariaDB (tested with v10.1.29)
 
 # LAUNCH
+As we are still on Beta Stage and don't want to release our crawler until we finish testing it properly as it will be the back-bone of the project this repo is included in, and we were getting some people calling to arms, we arranged a way of making the API and Front-end workable by everyone, even if the data is obviously outdated, it's structure is certainly not outdated. :D
 - Create DB 'brs_crawler':
   - Run SQL:
 ```
@@ -18,7 +19,7 @@ CREATE SCHEMA `brs_crawler` DEFAULT CHARACTER SET utf8mb4 ;
 CREATE USER 'netX'@'localhost' IDENTIFIED BY 'netX';
 GRANT ALL PRIVILEGES ON brs_crawler.* TO 'netX'@'localhost';
 ```
-- [Download bootstrap file](https://drive.google.com/open?id=1xMMO0rq5mDuvj8Y1lHHzXG8RivPzfqEs) for provisional db from
+- [Download MariaDB bootstrap file](https://drive.google.com/open?id=1xMMO0rq5mDuvj8Y1lHHzXG8RivPzfqEs) for provisional db from
 - Run on terminal (in the folder where you have brs_crawler.sql file downloaded from link above):
 ```
 mysql brs_crawler -u netX -pnetX < brs_crawler.sql
@@ -27,37 +28,19 @@ mysql brs_crawler -u netX -pnetX < brs_crawler.sql
   - Run on terminal:
 ```
 npm run setup
+node launcher.js
 ```
-NOTE: If you encounter any errors like "npm ERR! code ELIFECYCLE" (This was reported in Windows 10 machines running NodeJS v11.6.0) try run:
-```
-npm run clean-setup
-```
+NOTE: See USAGE.md for further information on scripts.
 
 - Import Postman examples into Postman and test the API calls
 - Please report issues in the issues tab and if you are keen to it, contributions are appreciated.
 
-# DONE:
-- IP Location, Public wallet verification and SSL Checking (just for peerById or peerByAddress)
-- API calls:
-* peers (POST localhost:5000/peers/)
-  - {	"requestType": "peers",	"start": 10,	"howMany": 30}  -> start = 10; howMany = 25
-  - {	"requestType": "peers",	"howMany": 20}                -> start = 1; howMany = 20
-  - {	"requestType": "peers"}                               -> start = 1; howMany = 25
-* peer (by ID or Address) (POST localhost:5000/peer/)
-  - {"id": 1}                                               -> search by ID
-  - {"address": "123.123.123.123:8123"}                     -> search by Address
-  - {"id": 1, "address": "123.123.123.123:8123"}            -> search by ID
-
-# TODO:
-- Integrate POST calls:
-  - {"requestType": "peersbyPlatform","platform": "brs"}
-  - {"requestType": "peersbyVersion","version": "1.1.1"}
-  - {"requestType": "peersbyHeight","height": 500000}
-- Frontend
-- Unit Testing
 
 # SUGESTIONS
 If you have a feature request, do a commit to the SUGESTIONS.md file in this directory.
 
 # CONTRIBUTING
-PRs and commits are appreciated but if you want to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network...
+Report issues in the tracker or by tagging @gpedro in this [Discord](https://discord.gg/2RSeRaG)
+Great PRs and commits get glorious and fame in the CREDITS.md of this repository!
+
+If you prefer to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network. These funds will be used to fund further development.
