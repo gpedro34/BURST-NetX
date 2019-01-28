@@ -4,15 +4,33 @@
   
   display: flex;
   justify-content: center;
-  align-items: center;  
+    
+}
+#controls {
+  border: 2px solid red;
+  width: 20vw;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+}
+
+.Forms {
+ 
+  
 }
 
 .Table {
-  border: 2px solid red;
+  border: 2px solid rgb(110, 45, 45);
   width: 80vw;
+  
   
 }
 
 .Item {
-  border: 2px solid rgb(212, 185, 185);
+  
+ 
 }
