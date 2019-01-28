@@ -12,7 +12,8 @@ exports.mariaDB = {
 
 exports.webserver = {
   "port": 5000,                 // default: 5000
-  "limitPeersPerAPIcall": 25    // default 25 - max amount of results provided through API calls
+  "limitPeersPerAPIcall": 25,   // default 25 - max amount of results provided through API calls
+  "whitelistCORS": ['http://localhost:3000']
 };
 
 // BRS related configuration

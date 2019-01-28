@@ -6,19 +6,39 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-//CORS middleware
-const allowCrossDomain = (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header('Access-Control-Allow-Methods', 'POST');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-
-    next();
+// CORS Whitelists
+var cors = require('cors');
+let allowedOrigins = require('./../../config/defaults').webserver.whitelistCORS;
+if(process.env.CORS_WHITELISTED){
+  process.env.CORS_WHITELISTED.forEach((el)=>{
+    allowedOrigins.push(el);
+  });
 }
 
+// Add in here other front-end endpoints if needed
+// It seems to not deal as well with wildcards as it says in documentation
+allowedOrigins.push('http://localhost:3000')
+
+const corsOptions = {
+  origin: function(origin, callback){
+    console.log(origin)
+    // allow requests with no origin
+    // (like mobile apps or curl requests)
+    // if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}
+
+
 app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended:false})); 
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
-app.use(allowCrossDomain);
+app.use(cors(corsOptions));
 
 // API Routes
 const peersRoutes = require('./routes/peers');
