@@ -27,7 +27,10 @@ mysql brs_crawler -u netX -pnetX < brs_crawler.sql
   - Run on terminal:
 ```
 npm run setup
-npm start
+```
+NOTE: If you encounter any errors like "npm ERR! code ELIFECYCLE" (This was reported in Windows 10 machines running NodeJS v11.6.0) try run:
+```
+npm run clean-setup
 ```
 
 - Import Postman examples into Postman and test the API calls
