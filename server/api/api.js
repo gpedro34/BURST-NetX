@@ -6,22 +6,23 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-// CORS Whitelists
+// CORS
 var cors = require('cors');
-let allowedOrigins = require('./../../config/defaults').webserver.whitelistCORS;
+const defaults = require('./../../config/defaults').webserver;
+// Whitelists
+let allowedOrigins = defaults.whitelistCORS;
+if(defaults.mode === "DEV" || defaults.mode === "OPEN"){
+  // Allows mobile and Postman tests
+  allowedOrigins.push(undefined);
+}
 if(process.env.CORS_WHITELISTED){
   process.env.CORS_WHITELISTED.forEach((el)=>{
     allowedOrigins.push(el);
   });
 }
-
-// Add in here other front-end endpoints if needed
-// It seems to not deal as well with wildcards as it says in documentation
-allowedOrigins.push('http://localhost:3000')
-
+// CORS SETUP
 const corsOptions = {
   origin: function(origin, callback){
-    console.log(origin)
     // allow requests with no origin
     // (like mobile apps or curl requests)
     // if(!origin) return callback(null, true);
@@ -45,11 +46,11 @@ const peersRoutes = require('./routes/peers');
   // Get all peers or peers by Platform, Version or Height
   app.post('/api/peers', peersRoutes.peersPost);
   /* Takes a POST with raw JSON like:
-    {"requestType": "peersByPlatform","platform": "brs"} or
-    {"requestType": "peersByVersion","version": "1.1.1"} or
-    {"requestType": "peersByHeight","platform": 500000} or
-    {"requestType": "peers","start": 100,"howMany": "200"} or
-    {"requestType": "peers"} - for default values (start:1; howMany:100)
+    {"requestType": "peersByPlatform", "platform": "brs"} or
+    {"requestType": "peersByVersion", "version": "1.1.1"} or
+    {"requestType": "peersByHeight", "platform": 500000} or
+    {"requestType": "peers", "start": 1..* , "howMany": 1..25} or
+    {"requestType": "peers"} - for default values (start:1; howMany:25)
   */
 const peerRoutes = require('./routes/peer');
   // Get peer by ID or address

@@ -11,9 +11,12 @@ exports.mariaDB = {
 };
 
 exports.webserver = {
+  "mode": "DEV",                // default: DEV - if DEV or OPEN mode will whitelist undefined origins
   "port": 5000,                 // default: 5000
   "limitPeersPerAPIcall": 25,   // default 25 - max amount of results provided through API calls
-  "whitelistCORS": ['http://localhost:3000']
+  "whitelistCORS": [            // add allowed origins in here for production
+    'http://localhost:3000'
+  ]
 };
 
 // BRS related configuration
