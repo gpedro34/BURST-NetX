@@ -32,6 +32,9 @@ node launcher.js
 ```
 NOTE: [See USAGE.md for further information on scripts](https://github.com/gpedro34/BURST-NetX/blob/master/USAGE.md)
 
+# REST API
+[Documentation on the API usage](https://documenter.getpostman.com/view/4955736/RztivWPm)
+
 # SUGESTIONS
 If you have a feature request, do a commit to the [SUGESTIONS.md file](https://github.com/gpedro34/BURST-NetX/blob/master/SUGESTIONS.md) in this repository.
 

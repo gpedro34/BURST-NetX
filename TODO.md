@@ -1,4 +1,4 @@
 # TODO:
-- Integrate API requestTypes "peersbyPlatform", "peersbyVersion", "peersbyHeight"
+- Integrate API requestTypes "peersbyVersion", "peersbyHeight"
 - Frontend
 - Unit Testing
