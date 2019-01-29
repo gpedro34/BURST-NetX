@@ -1,10 +1,10 @@
 'use strict';
 
 class Peers {
-
   constructor(db) {
 		this.db = db;
 	}
+
 
   async allFrom(table, id) {
     const dbc = await this.db.getConnection();
@@ -145,7 +145,7 @@ class Peers {
     }
   }
 
-  async platforms(id, platform){
+  async platforms(id, platform) {
     const dbc = await this.db.getConnection();
     let res;
     await dbc.beginTransaction();
@@ -170,7 +170,7 @@ class Peers {
     }
   }
 
-  async getPeersByPlatformId(id){
+  async getPeersByPlatformId(id) {
     let ob = [];
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
@@ -182,15 +182,14 @@ class Peers {
     return ob;
   }
 
-  async completeForCall(id){
+  async completeForCall(id) {
     const dbc = await this.db.getConnection();
     const [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [id]);
     dbc.release();
     return  resP[0].address
   }
 
-
-  async versions(id, version){
+  async versions(id, version) {
     const dbc = await this.db.getConnection();
     let res;
     await dbc.beginTransaction();
@@ -215,7 +214,7 @@ class Peers {
     }
   }
 
-  async getPeersByVersionId(id){
+  async getPeersByVersionId(id) {
     let ob = [];
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
@@ -226,6 +225,19 @@ class Peers {
     })
     return ob;
   }
+
+  async height (height) {
+    let ob = [];
+    const dbc = await this.db.getConnection();
+    await dbc.beginTransaction();
+    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE (result = 0 AND block_height >= '+height+')', []);
+    dbc.release();
+    await res.forEach(async (el)=>{
+      ob.push({id:el.peer_id});
+    })
+    return ob;
+  }
+
 }
 
 module.exports = Peers;

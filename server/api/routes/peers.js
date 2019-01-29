@@ -37,9 +37,7 @@ const peersByPlatform = async (id, platform) => {
   }
   if(!plat[0]){
     // No such version in DB
-    // TODO: handle it
     return plat;
-
   } else {
     let peers;
     peers = await control.getPeersByPlatformId(plat[0].id);
@@ -55,7 +53,7 @@ const peersByPlatform = async (id, platform) => {
     };
   }
 }
-// TODO: Get peers by Version
+// Get peers by Version
 const peersByVersion = async (id, version) => {
   // Gets version from DB
   let ver;
@@ -66,12 +64,9 @@ const peersByVersion = async (id, version) => {
     // Search by version ID
     ver = await control.versions(Number(id), null);
   }
-  console.log(ver);
   if(!ver[0]){
     // No such version in DB
-    // TODO: handle it
     return ver
-
   } else {
     let peers;
     peers = await control.getPeersByVersionId(ver[0].id);
@@ -89,18 +84,23 @@ const peersByVersion = async (id, version) => {
 }
 // TODO: Get peers by Height
 const peersByHeight = async (height) => {
-  // TODO: Get peers by height from DB
-
-  // Ex. of how should be the object coming out of this function
-  let obj = {
-    heights:[
-      {
-        height:500000,
-        addresses:['addresses in here','...','addresses in here']
-      }
-    ]
+  // Get peers over height from DB
+  // Gets peers over height from DB
+  const h = await control.height(height);
+  if(!h[0]){
+    // No peers over designated height in DB
+    return h
+  } else {
+    let completePeers = [];
+    await utils.asyncForEach(h, async (el)=>{
+      const completePeer = await control.completeForCall(el.id);
+      completePeers.push({id:el.id, address: completePeer});
+    });
+    return {
+        overHeight: height,
+        peers: completePeers
+    };
   }
-  return obj;
 }
 // Handles the POST request
 exports.peersPost = async (req, res) => {
