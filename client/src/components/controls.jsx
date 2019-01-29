@@ -37,6 +37,7 @@ class Controls extends Component {
             name="id"
             ref="id"
             type="number"
+            defaultValue={1}
           />
           <br />
           <input
@@ -45,6 +46,7 @@ class Controls extends Component {
             name="amaunt"
             ref="amaunt"
             type="number"
+            defaultValue={-1}
           />
           <br />
         </form>
