@@ -35,17 +35,23 @@ const peersByPlatform = async (id, platform) => {
     plat = await control.platforms(null, platform);
   } else {
     // Search by platform ID
-    plat = await control.platforms(id, null);
+    plat = await control.platforms(Number(id), null);
   }
-  if(plat[0]){
-    const peers = await control.getPeersByPlatformId(plat[0].id);
+  if(!plat[0]){
+    return plat
+  } else {
+    let peers;
+    peers = await control.getPeersByPlatformId(plat[0].id);
+    let completePeers = [];
+    await utils.asyncForEach(peers, async (el)=>{
+      const completePeer = await control.completeForPlatformCall(el.id);
+      completePeers.push({id:el.id, address: completePeer});
+    });
     return {
         platform: plat[0].platform,
         id: plat[0].id,
-        peers: peers
+        peers: completePeers
     };
-  } else {
-    return plat
   }
 }
 // TODO: Get peers by Version
@@ -131,10 +137,7 @@ exports.peersPost = async (req, res) => {
         });
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls
-        if(obj.error){
-          res.send(obj);
-        }
-        console.log('In Post: ',obj) // missing complete object in here
+        res.send(obj);
 
       }
 

@@ -68,7 +68,7 @@ class Peers {
       query += 'WHERE id = ?';
       arr.push(id);
     } else if (limit){
-      query += 'WHERE id BETWEEN '+start+' AND '+(limit+start+1);
+      query += 'WHERE id BETWEEN '+start+' AND '+(limit+start-1);
     }
     let ob = [];
   	try {
@@ -171,25 +171,24 @@ class Peers {
   }
 
   async getPeersByPlatformId(id){
+    let ob = [];
     const dbc = await this.db.getConnection();
-    let res, resP;
-    let ob = [{id:0}];
     await dbc.beginTransaction();
-    try{
-      [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE platform_id = ?', [id]);
-      res.forEach(async (el)=>{
-        [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [el.peer_id]);
-        ob.push({id:el.peer_id, address: resP[0].address});
-        if(el === res[res.length-1]){
-          dbc.release();
-          ob.splice(0, 1);
-          console.log(ob); // have complete records in here need to arrange a way of passing them further
-        }
-      });
-      return ob; // not returning together
-    }catch(err){
-      console.log(err)
-    }
+    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE platform_id = ?', [id]);
+    dbc.release();
+    await res.forEach(async (el)=>{
+      ob.push({id:el.peer_id});
+    })
+    return ob;
   }
+
+  async completeForPlatformCall(id){
+    const dbc = await this.db.getConnection();
+    const [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [id]);
+    dbc.release();
+    return  resP[0].address
+  }
+
 }
+
 module.exports = Peers;
