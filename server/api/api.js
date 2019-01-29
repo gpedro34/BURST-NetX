@@ -52,7 +52,7 @@ const peersRoutes = require('./routes/peers');
   /* Takes a POST with raw JSON like:
     {"requestType": "peersByPlatform", "platform": "brs"} or
     {"requestType": "peersByVersion", "version": "1.1.1"} or
-    {"requestType": "peersByHeight", "platform": 500000} or
+    {"requestType": "peersByHeight", "height": 500000} or
     {"requestType": "peers", "start": 1..* , "howMany": 1..25} or
     {"requestType": "peers"} - for default values (start:1; howMany:25)
   */

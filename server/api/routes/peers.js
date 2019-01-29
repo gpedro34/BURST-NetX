@@ -7,9 +7,7 @@ const limitPeers = require('./../../../config/defaults').webserver.limitPeersPer
 const peers = async (firstIndex, amount) => {
   // Validates firstIndex
   if(typeof firstIndex !== 'number' || firstIndex < 1){
-    return {
-      error: 'ID to start from is invalid. IDs start at 1'
-    }
+    firstIndex = 1;
   }
   // Validates amount (default 25 peers)
   if(typeof amount === 'number'){
