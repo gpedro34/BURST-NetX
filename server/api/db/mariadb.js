@@ -182,13 +182,50 @@ class Peers {
     return ob;
   }
 
-  async completeForPlatformCall(id){
+  async completeForCall(id){
     const dbc = await this.db.getConnection();
     const [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [id]);
     dbc.release();
     return  resP[0].address
   }
 
+
+  async versions(id, version){
+    const dbc = await this.db.getConnection();
+    let res;
+    await dbc.beginTransaction();
+    try{
+      if(id){
+        [res] = await dbc.execute('SELECT * from scan_versions WHERE id = ?', [id]);
+      } else if(version) {
+        [res] = await dbc.execute('SELECT * from scan_versions WHERE version = ?', [version]); // need tests
+      }
+      dbc.release();
+      if(res[0]){
+        return [{
+          id: res[0].id,
+          version: res[0].version
+        }];
+      } else {
+        return {error: 'There is no version with that Name/ID'}
+      }
+    }catch(err){
+      console.log(err);
+      return {error: 'There is no version with that Name/ID'}
+    }
+  }
+
+  async getPeersByVersionId(id){
+    let ob = [];
+    const dbc = await this.db.getConnection();
+    await dbc.beginTransaction();
+    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE version_id = ?', [id]);
+    dbc.release();
+    await res.forEach(async (el)=>{
+      ob.push({id:el.peer_id});
+    })
+    return ob;
+  }
 }
 
 module.exports = Peers;

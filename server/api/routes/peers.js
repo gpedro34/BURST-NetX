@@ -38,13 +38,16 @@ const peersByPlatform = async (id, platform) => {
     plat = await control.platforms(Number(id), null);
   }
   if(!plat[0]){
-    return plat
+    // No such version in DB
+    // TODO: handle it
+    return plat;
+
   } else {
     let peers;
     peers = await control.getPeersByPlatformId(plat[0].id);
     let completePeers = [];
     await utils.asyncForEach(peers, async (el)=>{
-      const completePeer = await control.completeForPlatformCall(el.id);
+      const completePeer = await control.completeForCall(el.id);
       completePeers.push({id:el.id, address: completePeer});
     });
     return {
@@ -55,19 +58,36 @@ const peersByPlatform = async (id, platform) => {
   }
 }
 // TODO: Get peers by Version
-const peersByVersion = async (version) => {
-  // TODO: Get peers by version from DB
-
-  // Ex. of how should be the object coming out of this function
-  let obj = {
-    versions:[
-      {
-        version:"1.1.1",
-        addresses:['addresses in here','...','addresses in here']
-      }
-    ]
+const peersByVersion = async (id, version) => {
+  // Gets version from DB
+  let ver;
+  if(version){
+    // Search by version
+    ver = await control.versions(null, version);
+  } else {
+    // Search by version ID
+    ver = await control.versions(Number(id), null);
   }
-  return obj;
+  console.log(ver);
+  if(!ver[0]){
+    // No such version in DB
+    // TODO: handle it
+    return ver
+
+  } else {
+    let peers;
+    peers = await control.getPeersByVersionId(ver[0].id);
+    let completePeers = [];
+    await utils.asyncForEach(peers, async (el)=>{
+      const completePeer = await control.completeForCall(el.id);
+      completePeers.push({id:el.id, address: completePeer});
+    });
+    return {
+        version: ver[0].version,
+        id: ver[0].id,
+        peers: completePeers
+    };
+  }
 }
 // TODO: Get peers by Height
 const peersByHeight = async (height) => {
@@ -96,7 +116,7 @@ exports.peersPost = async (req, res) => {
         obj = await peersByPlatform(req.body.id, req.body.platform);
         break;
       case 'peersbyVersion':
-        obj = await peersByVersion(req.body.version);
+        obj = await peersByVersion(req.body.id, req.body.version);
         break;
       case 'peersbyHeight':
         obj = await peersByHeight(req.body.height);
@@ -138,7 +158,6 @@ exports.peersPost = async (req, res) => {
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls
         res.send(obj);
-
       }
 
     } else {
