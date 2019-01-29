@@ -1,16 +1,9 @@
 import React, { Component } from "react";
 
-class Table extends Component {
-
-    shouldComponentUpdate(){
-        if (this.props.apiCallType !== "allPeers"){
-            return false
-        }
-        return true
-    }
+class ApiPeersAnswer extends Component {
   render() {
     return (
-      <div className="Table">
+      <div className="ApiPeersAnswer">
         {/* <Item address={apiAnswer[0].address} id={apiAnswer[0].id} key={apiAnswer[0].id} /> */}
         {/* will use condition rendering this.props.testState === 'a' && ... */}
         {this.props.apiAnswer.map(a => (
@@ -23,6 +16,7 @@ class Table extends Component {
             platform={a.measurements.platform}
           />
         ))}
+        {console.log(this.props.apiAnswer)}
       </div>
     );
   }
@@ -32,12 +26,14 @@ function Item(props) {
   return (
     <div className="Item">
       <span id={props.id}>Address: {props.address} </span>
+      <span>Id: {props.id} </span>
       <span>Uptime: {props.uptime} </span>
       <span>Version: {props.version} </span>
       <span>Platform: {props.platform} </span>
+
       <hr />
     </div>
   );
 }
 
-export default Table;
+export default ApiPeersAnswer;
