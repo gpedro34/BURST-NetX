@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import axios from "axios";
 import AddressPeerAnswer from "./../apiAnswers/AddressPeerAnswer.jsx";
+import apiAddress from "./../../defaults"
+
 
 class AddressPeer extends Component {
   constructor(props) {
@@ -29,7 +31,7 @@ class AddressPeer extends Component {
 
   apicallAll = () => {
     axios
-    .post("http://localhost:5000/api/peer", {
+    .post(apiAddress + "api/peer", {
         address: this.props.address
       })
       .then(

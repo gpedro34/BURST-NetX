@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 import UptimePeerAnswer from "./../apiAnswers/UptimePeerAnswer.jsx";
+import apiAddress from "./../../defaults";
 
 class UptimePeer extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class UptimePeer extends Component {
 
   apicallAll = () => {
     axios
-      .post("http://localhost:5000/api/peers", {
+      .post(apiAddress + "api/peers", {
         requestType: "peers",
         start: 1,
         amount: -1
