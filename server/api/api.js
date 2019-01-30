@@ -45,6 +45,14 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
+
+
+
+// APi Docs at http://localhost:5000
+app.get('/', function(req, res) {
+    res.redirect('https://documenter.getpostman.com/view/4955736/RztivWPm')
+});
+
 // API Routes
 const peersRoutes = require('./routes/peers');
   // Get all peers or peers by Platform, Version or Height
