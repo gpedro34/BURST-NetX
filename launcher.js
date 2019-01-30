@@ -1,3 +1,5 @@
+'use strict';
+
 const concurrently = require('concurrently');
 const chalk = require('chalk');
 var exit = require('exit');
