@@ -3,6 +3,11 @@ import AllPeers from "./apiCalls/AllPeers.jsx";
 import IdPeer from "./apiCalls/IdPeer.jsx";
 import AddressPeer from "./apiCalls/AddressPeer.jsx";
 import UptimePeer from "./apiCalls/UptimePeer.jsx";
+import PlatformPeers from "./apiCalls/PlatformPeers";
+import PlatformIdPeers from "./apiCalls/PlatformIdPeers";
+import VersionPeers from "./apiCalls/VersionPeers";
+import VersionIdPeers from "./apiCalls/VersionIdPeers";
+import HeightPeers from "./apiCalls/HeightPeer";
 
 //apiCallType allPeers, idPeer, addressPeer, uptimePeer(removed), platformIdPeers, platformPeers, versionIdPeers, versionPeers, heightPeers.
 class ApiCalls extends Component {
@@ -31,32 +36,36 @@ class ApiCalls extends Component {
     } else if (this.props.apiCallType === "platformPeers") {
       return (
         <div>
-          {console.log(this.props.address)}
+          <PlatformPeers address={this.props.address} />
         </div>
       );
     } else if (this.props.apiCallType === "platformIdPeers") {
       return (
         <div>
-          {console.log(this.props.id)}
+           <PlatformIdPeers id={this.props.id} />
+           {console.log(this.props.apiCallType)}
         </div>
       );
     } else if (this.props.apiCallType === "versionIdPeers") {
       return (
         <div>
-          {console.log(this.props.id)}
+          <VersionIdPeers id={this.props.id} />
+           {console.log(this.props.apiCallType)}
         </div>
       );
     } else if (this.props.apiCallType === "versionPeers") {
       return (
         <div>
-          {console.log(this.props.version)}
-        </div>
+        <VersionPeers version={this.props.version} />
+         {console.log(this.props.apiCallType)}
+      </div>
       );
     } else if (this.props.apiCallType === "heightPeers") {
       return (
         <div>
-          {console.log(this.props.height)}
-        </div>
+        <HeightPeers height={this.props.height} />
+         {console.log(this.props.apiCallType)}
+      </div>
       );
     } else if (this.props.apiCallType === "uptimePeer") {
       return (

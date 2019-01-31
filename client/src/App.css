@@ -6,7 +6,7 @@
   justify-content: center;
 }
 #controls {
-  border: 2px solid red;
+ 
   width: 20vw;
   height: 100vh;
   position: sticky;
@@ -19,11 +19,13 @@
 }
 
 .ApiPeersAnswer {
-  border: 2px solid rgb(110, 45, 45);
+  border: 2px solid white;
+  margin-top: 10px;
+  margin-right: 10px;
   width: 80vw;
 }
 #loading {
-  border: 2px solid rgb(110, 45, 45);
+  
   width: 80vw;
   height: 100vh;
   display: flex;

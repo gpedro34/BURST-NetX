@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios";
-import ApiPeersAnswer from "./../apiAnswers/AllPeersAnswer.jsx";
+import IdPeersAnswer from "./../apiAnswers/IdPeersAnswer.jsx";
 import apiAddress from "./../../defaults";
-//call dont works reliable
-class AllPeers extends Component {
+
+class PlatformIdPeers extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +14,7 @@ class AllPeers extends Component {
   }
   componentDidMount() {
     this.apicallAll();
+    console.log("primas");
   }
 
   componentWillReceiveProps() {
@@ -21,20 +22,20 @@ class AllPeers extends Component {
     this.setState({
       isLoaded: false
     });
+    console.log("antras");
   }
 
   apicallAll = () => {
     axios
       .post(apiAddress + "api/peers", {
-        requestType: "peers",
-        start: this.props.startFromId,
-        howMany: this.props.amaunt
+        requestType: "peersbyPlatform",
+        id: this.props.id
       })
       .then(
         result => {
           this.setState({
             isLoaded: true,
-            apiAnswer: result.data.peers
+            apiAnswer: result.data
           });
         },
         error => {
@@ -55,11 +56,11 @@ class AllPeers extends Component {
     } else {
       return (
         <div>
-          <ApiPeersAnswer apiAnswer={apiAnswer} />
+          <IdPeersAnswer apiAnswer={apiAnswer} />
         </div>
       );
     }
   }
 }
 
-export default AllPeers;
+export default PlatformIdPeers;
