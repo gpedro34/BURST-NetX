@@ -56,6 +56,7 @@ class AllPeers extends Component {
       return (
         <div>
           <ApiPeersAnswer apiAnswer={apiAnswer} />
+          {console.log(apiAddress)}
         </div>
       );
     }
