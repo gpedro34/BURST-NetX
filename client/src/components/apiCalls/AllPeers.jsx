@@ -28,7 +28,7 @@ class AllPeers extends Component {
       .post(apiAddress + "api/peers", {
         requestType: "peers",
         start: this.props.startFromId,
-        amount: this.props.amaunt
+        howMany: this.props.amaunt
       })
       .then(
         result => {

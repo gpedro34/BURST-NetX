@@ -12,7 +12,11 @@ class App extends Component {
       amaunt: -1,
       id: 1,
       address: "",
-      uptime: 80
+      uptime: 80,
+      version: "2.2.7",
+      height: 500000
+      
+
     };
   }
 
@@ -29,12 +33,25 @@ class App extends Component {
       id: idPeer
     });
   };
-  hendlePeerByAddress = (type, address) => {
+  hendlePeerByAddress = (type, address) => { 
     this.setState({
       apiCallType: type,
       address: address
     });
   };
+  hendlePeerByVersion = (type, version) => { 
+    this.setState({
+      apiCallType: type,
+      version: version
+    });
+  };
+  hendlePeerByHeight = (type, height) => { 
+    this.setState({
+      apiCallType: type,
+      height: height
+    });
+  };
+
   hendleUptime = (type, uptime) => {
     this.setState({
       apiCallType: type,
@@ -48,7 +65,9 @@ class App extends Component {
       uptime,
       address,
       id,
-      apiCallType
+      apiCallType,
+      version,
+      height
     } = this.state;
 
     return (
@@ -57,7 +76,10 @@ class App extends Component {
           hendleAllPeers={this.hendleAllPeers}
           hendlePeerById={this.hendlePeerById}
           hendlePeerByAddress={this.hendlePeerByAddress}
+          hendlePeerByVersion={this.hendlePeerByVersion}
+          hendlePeerByHeight={this.hendlePeerByHeight}
           hendleUptime={this.hendleUptime}
+          
         />
 
         <ApiCalls
@@ -67,7 +89,9 @@ class App extends Component {
           id={id}
           address={address}
           uptime={uptime}
-        />
+          version={version}
+          height={height}
+         />
       </div>
     );
   }

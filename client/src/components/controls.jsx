@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+//apiCallType allPeers, idPeer, addressPeer, uptimePeer(removed), platformIdPeers, platformPeers, versionIdPeers, versionPeers, heightPeers.
 class Controls extends Component {
   allPeers = e => {
     e.preventDefault();
@@ -18,6 +18,31 @@ class Controls extends Component {
     e.preventDefault();
     this.props.hendlePeerByAddress("addressPeer", this.refs.address.value);
     console.log(this.refs.address.value);
+  };
+  peerByPlatform = e => {
+    e.preventDefault();
+    this.props.hendlePeerByAddress("platformPeers", this.refs.platform.value);
+    console.log(this.refs.platform.value);
+  };
+  peerByPlatformId = e => {
+    e.preventDefault();
+    this.props.hendlePeerById("platformIdPeers", this.refs.platformId.value);
+    console.log(this.refs.platformId.value);
+  };
+  peerByVersionId = e => {
+    e.preventDefault();
+    this.props.hendlePeerById("versionIdPeers", this.refs.platformVersionId.value);
+    console.log(this.refs.platformVersionId.value);
+  };
+  peerByVersion = e => {
+    e.preventDefault();
+    this.props.hendlePeerByVersion("versionPeers", this.refs.platformVersion.value);
+    console.log(this.refs.platformVersion.value);
+  };
+  peerByHeight = e => {
+    e.preventDefault();
+    this.props.hendlePeerByHeight("heightPeers", this.refs.height.value);
+    console.log(this.refs.height.value);
   };
   peerFilter = e => {
     e.preventDefault();
@@ -70,6 +95,56 @@ class Controls extends Component {
             type="number/text"
           />
         </form>
+        <form className="Forms" onSubmit={this.peerByPlatform}>
+          <input className="Buttons" type="submit" value="Peer by Platform" />
+          <br />
+          <input
+            className="Input"
+            placeholder="peer platforms name"
+            ref="platform"
+            type="number/text"
+          />
+        </form>
+        <form className="Forms" onSubmit={this.peerByPlatformId}>
+          <input className="Buttons" type="submit" value="Peer by Platform Id" />
+          <br />
+          <input
+            className="Input"
+            placeholder="peer platforms Id"
+            ref="platformId"
+            type="number"
+          />
+          </form>
+          <form className="Forms" onSubmit={this.peerByVersionId}>
+          <input className="Buttons" type="submit" value="Peer by Version Id" />
+          <br />
+          <input
+            className="Input"
+            placeholder="peer version Id"
+            ref="platformVersionId"
+            type="number"
+          />
+          </form>
+          <form className="Forms" onSubmit={this.peerByVersion}>
+          <input className="Buttons" type="submit" value="Peer by Version" />
+          <br />
+          <input
+            className="Input"
+            placeholder="peer version"
+            ref="platformVersion"
+            type="number"
+          />
+          </form>
+          <form className="Forms" onSubmit={this.peerByHeight}>
+          <input className="Buttons" type="submit" value="Peer by Height" />
+          <br />
+          <input
+            className="Input"
+            placeholder="peers from height"
+            ref="height"
+            type="number"
+          />
+          </form>
         <form className="Forms" onSubmit={this.peerFilter}>
           <input className="Buttons" type="submit" value="Filter by Uptime" />
           <br />
@@ -84,5 +159,6 @@ class Controls extends Component {
     );
   }
 }
+
 
 export default Controls;
