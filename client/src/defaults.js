@@ -1,3 +1,3 @@
-const clientApiCalls = "http://localhost:5000/"
+const clientApiCalls = "http://watchdog.burstcoin.pt/"
 
 export default clientApiCalls;

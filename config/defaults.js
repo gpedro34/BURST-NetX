@@ -15,7 +15,7 @@ exports.webserver = {
   "port": 5000,                 // default: 5000
   "limitPeersPerAPIcall": 25,   // default 25 - max amount of results provided through API calls
   "whitelistCORS": [            // add allowed origins in here for production
-    'http://localhost:3000'
+    'http://localhost:3000'   
   ]
 };
 
