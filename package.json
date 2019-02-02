@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Network Explorer API and front-end",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gpedro34/BURST-NetX.git"
+  },
   "keywords": [
     "burst",
     "brs",
@@ -10,11 +14,14 @@
     "crawler"
   ],
   "scripts": {
-    "server": "node server/server.js",
-    "client": "npm start --prefix client",
-    "start": "node launcher.js",
     "setup": "npm install && cd client && npm install && cd ..",
-    "clean-setup": "bash ./clean-setup.sh"
+    "clean-setup": "bash ./clean-setup.sh",
+    "server": "node server/server.js",
+    "dev-client": "npm start --prefix client",
+    "build-client": "echo Hope you didn't forgot to set process.env before running this && echo or your API calls will be done to watchdog.burst-alliance.org API and not a specified domain && echo If react builder fails in CSS and JS files keep trying... && rm -rf fe-build && cd client/src && rm -rf build && npm run build && mv ./../build ./../../fe-build",
+    "prod-client": "npm install -g serve && serve -s build",
+    "prod-bundle": "concurrently \"node server/server.js\" \" serve -s fe-build -l 3000\"",
+    "dev-bundle": "node launcher.js"
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",
