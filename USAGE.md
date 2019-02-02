@@ -19,6 +19,11 @@ npm run clean-setup
 node launcher.js
 ```
 
+- Starts Back-End and Front-End together (Time and FE-BE tag)
+```
+npm run dev-bundle
+```
+
 - Starts just Back-End
 ```
 npm run server
@@ -26,5 +31,25 @@ npm run server
 
 - Starts just Front-End
 ```
-npm run client
+npm run dev-client
+```
+
+- Build React Front-End
+```
+npm run build-client
+```
+
+- Serves builded React Front-end
+```
+npm run prod-client
+```
+
+- Serves builded React Front-end
+```
+npm run prod-client
+```
+
+- Serves builded React Front-end + Backend
+```
+npm run prod-bundle
 ```
