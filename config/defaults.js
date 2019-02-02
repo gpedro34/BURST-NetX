@@ -15,8 +15,13 @@ exports.webserver = {
   "port": 5000,                 // default: 5000
   "limitPeersPerAPIcall": 25,   // default 25 - max amount of results provided through API calls
   "whitelistCORS": [            // add allowed origins in here for production
-    'http://localhost:3000'   
+    'http://localhost:5000'
   ]
+};
+
+exports.bundle = {
+  "mode": "PROD"                 // default: DEV - will not load frontend as it has no build yet
+                                // can also be PROD - will have frontend at domain root (default: http://localhost:5000)
 };
 
 // BRS related configuration

@@ -48,8 +48,3 @@ npm run prod-client
 ```
 npm run prod-client
 ```
-
-- Serves builded React Front-end + Backend
-```
-npm run prod-bundle
-```

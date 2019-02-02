@@ -20,7 +20,6 @@
     "dev-client": "npm start --prefix client",
     "build-client": "echo Hope you didn't forgot to set DOMAIN_API && echo before running this script or your build will not work && echo If react builder fails in CSS and JS files keep trying... && rm -rf fe-build && cd client/src && rm -rf build && npm run build && mv ./../build ./../../fe-build\"",
     "prod-client": "serve -s fe-build -l 3000",
-    "prod-bundle": "concurrently \"node server/server.js\" \"serve -s fe-build -l 3000\"",
     "dev-bundle": "node launcher.js"
   },
   "author": "gpedro",

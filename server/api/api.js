@@ -8,10 +8,10 @@ const bodyParser = require('body-parser');
 
 // CORS
 var cors = require('cors');
-const defaults = require('./../../config/defaults').webserver;
+const defaults = require('./../../config/defaults');
 // Whitelists
-let allowedOrigins = defaults.whitelistCORS;
-if(defaults.mode === "DEV"){
+let allowedOrigins = defaults.webserver.whitelistCORS;
+if(defaults.webserver.mode === "DEV"){
   // Allows mobile and Postman tests
   allowedOrigins.push(undefined);
 }
@@ -38,19 +38,27 @@ const corsOptions = {
     return callback(null, true);
   }
 }
-
-
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
+let bundleMode = process.env.PORT || defaults.bundle.mode;
+try{
+  const checkBuild = require('./../../fe-build/manifest.json');
+  bundleMode = 'PROD';
+} catch {
+  bundleMode = 'DEV';
+}
 
+if(bundleMode === 'PROD'){
+  // Frontend served at http://localhost:5000/
+  app.get('/', app.use(express.static('fe-build')));
+}
 
-
-// APi Docs at http://localhost:5000
-app.get('/', function(req, res) {
-    res.redirect('https://documenter.getpostman.com/view/4955736/RztivWPm')
+// APi Docs at http://localhost:5000/docs
+app.get('/docs', (req, res) => {
+    res.redirect('https://documenter.getpostman.com/view/4955736/RztivWPm');
 });
 
 // API Routes
