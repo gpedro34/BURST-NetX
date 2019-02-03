@@ -38,3 +38,37 @@ exports.peerPost = async (req, res) => {
   // Send the results
   res.send(resume);
 }
+
+
+// Handles the GET request
+exports.peerGet = async (req, res) => {
+  let obj = {};
+  req.params.id = Number(req.params.id)
+  // Get Peer basic information
+  if(req.params.id > 0){
+    obj = await control.peers(req.params.id);
+  } else if(typeof req.params.address === 'string' && req.params.address.length > 10){
+    obj = await control.peers(null, req.params.address);
+  } else {
+    obj = {
+      error: 'Invalid Peer ID or Address'
+    }
+    // Send the results
+    res.send(obj);
+    return;
+  }
+  if(obj.error){
+    // Send the results
+    res.send(obj);
+    return;
+  }
+  // Complete peer information
+  const comp = await control.completePeer(obj[0]);
+  // Resume Measurements
+  const resume = await utils.resumeMeasurements(comp);
+  // SSL, location and wallet check
+  const walletData = await ssl.checkNode(brs.normalizeAPI(resume.address, true));
+  resume.info = walletData;
+  // Send the results
+  res.send(resume);
+}

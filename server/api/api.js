@@ -65,9 +65,18 @@ app.get('/docs', (req, res) => {
 const peersRoutes = require('./routes/peers');
   // Get all peers or peers by Platform, Version or Height
   app.post('/api/peers', peersRoutes.peersPost);
+  app.get('/api/getPeersById/:start', peersRoutes.peersGet);
+  app.get('/api/getPeersById/:start/:howMany', peersRoutes.peersGet);
+  app.get('/api/getPeersByPlatformId/:id', peersRoutes.peersGet);
+  app.get('/api/getPeersByPlatform/:platform', peersRoutes.peersGet);
+  app.get('/api/getPeersByVersionId/:id', peersRoutes.peersGet);
+  app.get('/api/getPeersByVersion/:version', peersRoutes.peersGet);
+  app.get('/api/getPeersByHeight/:height', peersRoutes.peersGet);
 const peerRoutes = require('./routes/peer');
   // Get peer by ID or address
   app.post('/api/peer', peerRoutes.peerPost);
+  app.get('/api/peerById/:id', peerRoutes.peerGet);
+  app.get('/api/peerByAddress/:address', peerRoutes.peerGet);
 // Invalid routes
 app.use((req, res, next) => {
   const error = new Error('Not found');

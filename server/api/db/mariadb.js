@@ -1,27 +1,31 @@
 'use strict';
 
+const utils = require('./../utils');
+
 class Peers {
   constructor(db) {
 		this.db = db;
 	}
 
-
+  // All from table (optional ID to search for)
   async allFrom(table, id) {
     const dbc = await this.db.getConnection();
     let ob = [];
+    let query = 'SELECT * from '+table;
+    let arr = [];
     try {
       await dbc.beginTransaction();
       let res;
-
       if(id){
         if(table === 'scans'){
-          [res] = await dbc.execute('SELECT * from '+table+' WHERE peer_id = ?', [id]);
+          query += ' WHERE peer_id = ?';
+          arr.push(id);
         } else {
-          [res] = await dbc.execute('SELECT * from '+table+' WHERE id = ?', [id]);
+          query += ' WHERE id = ?'
+          arr.push(id);
         }
-      } else {
-        [res] = await dbc.execute('SELECT * from '+table, []);
       }
+      [res] = await dbc.execute(query, arr);
       for(let a = 0; a < res.length; a++){
         if(table === 'scan_platforms'){
           ob.push({
@@ -56,19 +60,24 @@ class Peers {
       return ob;
   	}
   }
-
+  // Peers by ID or Address or list of peers (paginated)
   async peers(id, address, limit, start) {
     const dbc = await this.db.getConnection();
     let query = 'SELECT * FROM peers ';
     let arr = [];
     if (address) {
-      query += 'WHERE address = ?';
+      query += 'WHERE address = ?'
+            + ' ORDER BY id ASC';
       arr.push(address);
     } else if(id){
-      query += 'WHERE id = ?';
+      query += 'WHERE id = ?'
+            + ' ORDER BY id ASC';
       arr.push(id);
     } else if (limit){
-      query += 'WHERE id BETWEEN '+start+' AND '+(limit+start-1);
+      query += 'WHERE id'
+            + ' BETWEEN '+start
+            + ' AND '+(limit+start-1)
+            + ' ORDER BY id ASC';
     }
     let ob = [];
   	try {
@@ -91,7 +100,7 @@ class Peers {
           return ob;
         } else {
           res.forEach((el)=>{
-            if(el.id >= start && el.id <= limit+start){
+            if(el.id >= start && el.id <= limit+start-1){
               ob.push({
                 id: el.id,
                 address: el.address,
@@ -106,26 +115,36 @@ class Peers {
           return ob;
         }
       } else {
-        ob.push({
-          error: 'There is no peer with such address or ID'
-        });
+        if(address){
+          ob.push({ error: 'There is no peer with such address' });
+        } else if (id){
+          ob.push({ error: 'There is no peer with such id' });
+        } else {
+          ob.push({ error: 'Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
+        }
         dbc.release();
         return ob;
       }
     } catch(err){
+      if(address){
+        ob.push({ error: 'There is no peer with such address' });
+      } else if (id){
+        ob.push({ error: 'There is no peer with such id' });
+      } else {
+        ob.push({ error: 'Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
+      }
       console.log('Errored');
       console.log(err);
+      console.log(ob);
       dbc.release();
-      return;
+      return ob;
     }
   }
-
+  // Get peer scans
   async completePeer(peer) {
-    let scan;
-    let ob = [];
     if(peer.id){
-      scan = await this.allFrom('scans', peer.id);
-      ob = {
+      const scan = await this.allFrom('scans', peer.id);
+      let ob = {
         address: peer.address,
         id: peer.id,
         discovered: peer.discovered,
@@ -133,28 +152,43 @@ class Peers {
         lastScanned: peer.lastScanned,
         measurements: []
       }
-      scan.forEach((row)=>{
-        ob.measurements.push([row.timestamp, row.result, row.rtt, row.blockHeight, require('./../utils').getVersion(row.versionId), require('./../utils').getPlatform(row.platformId)])
+      await utils.asyncForEach(scan, async (row)=>{
+        const version = await this.versions(row.versionId);
+        const platform = await this.platforms(row.platformId);
+        ob.measurements.push([
+          row.timestamp,
+          row.result,
+          row.rtt,
+          row.blockHeight,
+          version[0].version,
+          platform[0].platform
+        ]);
       });
       return ob;
     } else {
       if(peer.error){
         return peer;
       }
-      scan = await this.allFrom('scans');
     }
   }
-
+  // gets platforms from a given a platform or platformID
   async platforms(id, platform) {
     const dbc = await this.db.getConnection();
     let res;
     await dbc.beginTransaction();
+    let query = 'SELECT * from scan_platforms';
+    let arr = [];
+    if(id){
+      query += ' WHERE id = ?'
+              +' ORDER BY id ASC'
+      arr.push(id);
+    } else if(platform) {
+      query += ' WHERE platform = ?'
+            +' ORDER BY id ASC';
+      arr.push(platform);
+    }
     try{
-      if(id){
-        [res] = await dbc.execute('SELECT * from scan_platforms WHERE id = ?', [id]);
-      } else if(platform) {
-        [res] = await dbc.execute('SELECT * from scan_platforms WHERE platform = ?', [platform]); // need tests
-      }
+      [res] = await dbc.execute(query, arr);
       dbc.release();
       if(res[0]){
         return [{
@@ -162,43 +196,60 @@ class Peers {
           platform: res[0].platform
         }];
       } else {
-        return {error: 'There is no platform with that Name/ID'}
+        if(id){
+          return {error: 'There is no platform with that ID'};
+        } else if(platform) {
+          return {error: 'There is no platform with that Name'};
+        } else {
+          console.error('Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+          return {error: 'Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+        }
       }
     }catch(err){
-      console.log(err);
-      return {error: 'There is no platform with that Name/ID'}
+      if(id){
+        return {error: 'There is no platform with that ID'};
+      } else if(platform) {
+        return {error: 'There is no platform with that Name'};
+      } else {
+        console.error('Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+        return {error: 'Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+      }
     }
   }
-
+  // gets peers that ever used a certain platformId
   async getPeersByPlatformId(id) {
     let ob = [];
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
-    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE platform_id = ?', [id]);
+    const [res] = await dbc.execute(
+        'SELECT DISTINCT peer_id from scans'
+      +' WHERE platform_id = ?'
+      +' ORDER BY peer_id ASC'
+    , [id]);
     dbc.release();
     await res.forEach(async (el)=>{
       ob.push({id:el.peer_id});
     })
     return ob;
   }
-
-  async completeForCall(id) {
-    const dbc = await this.db.getConnection();
-    const [resP] = await dbc.execute('SELECT address from peers WHERE id = ?', [id]);
-    dbc.release();
-    return  resP[0].address
-  }
-
+  // gets versions from a given version or versionId
   async versions(id, version) {
     const dbc = await this.db.getConnection();
     let res;
     await dbc.beginTransaction();
+    let query = 'SELECT * from scan_versions';
+    let arr = [];
+    if(id){
+      query +=' WHERE id = ?'
+             +' ORDER BY id ASC'
+      arr.push(id);
+    } else if(version) {
+      query += ' WHERE version = ?'
+              +' ORDER BY version ASC'
+      arr.push(version); // need tests
+    }
     try{
-      if(id){
-        [res] = await dbc.execute('SELECT * from scan_versions WHERE id = ?', [id]);
-      } else if(version) {
-        [res] = await dbc.execute('SELECT * from scan_versions WHERE version = ?', [version]); // need tests
-      }
+      [res] = await dbc.execute(query, arr);
       dbc.release();
       if(res[0]){
         return [{
@@ -206,38 +257,68 @@ class Peers {
           version: res[0].version
         }];
       } else {
-        return {error: 'There is no version with that Name/ID'}
+        if(id){
+          return {error: 'There is no version with that ID'};
+        } else if(platform) {
+          return {error: 'There is no version with that Name'};
+        } else {
+          console.error('Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+          return {error: 'Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+        }
       }
     }catch(err){
-      console.log(err);
-      return {error: 'There is no version with that Name/ID'}
+      if(id){
+        return {error: 'There is no version with that ID'};
+      } else if(version) {
+        return {error: 'There is no version with that Name'};
+      } else {
+        console.error('Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+        return {error: 'Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+      }
     }
   }
-
+  // gets peers that ever used a certain versionId
   async getPeersByVersionId(id) {
     let ob = [];
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
-    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE version_id = ?', [id]);
+    const [res] = await dbc.execute(
+          'SELECT DISTINCT peer_id from scans'
+        +' WHERE version_id = ?'
+        +' ORDER BY peer_id ASC'
+    , [id]);
     dbc.release();
     await res.forEach(async (el)=>{
       ob.push({id:el.peer_id});
     })
     return ob;
   }
-
+  // get address of a given peerId
+  async completeForCall(id) {
+    const dbc = await this.db.getConnection();
+    const [resP] = await dbc.execute(
+        'SELECT address from peers'
+      +' WHERE id = ?'
+    , [id]);
+    dbc.release();
+    return  resP[0].address
+  }
+  // get peers seen over give height
   async height (height) {
     let ob = [];
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
-    const [res] = await dbc.execute('SELECT DISTINCT peer_id from scans WHERE (result = 0 AND block_height >= '+height+')', []);
+    const [res] = await dbc.execute(
+      'SELECT DISTINCT peer_id, block_height from scans'
+    +' WHERE (result = 0 AND block_height >= '+height+')'
+    +' ORDER BY block_height DESC'
+    , []);
     dbc.release();
     await res.forEach(async (el)=>{
       ob.push({id:el.peer_id});
     })
     return ob;
   }
-
 }
 
 module.exports = Peers;
