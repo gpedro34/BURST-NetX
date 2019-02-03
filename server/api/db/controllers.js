@@ -18,12 +18,4 @@ const db = require('mysql2/promise').createPool({
 exports.cPeers = new peers(db);
 console.log('Connected to MariaDB');
 
-
-
-exports.launch = async () => {
-  // Update constants VERSIONS and PLATFORMS
-  // await updater()
-  const updaterInterval = setInterval(()=>{updater()}, 1000*60*config.mariaDB.updateConstants);
-}
-
 module.export = db;

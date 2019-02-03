@@ -9,7 +9,6 @@ const control = require('./api/db/controllers');
 const port = process.env.PORT || require('./../config/defaults').webserver.port || 5000;
 const server = app.listen(port, () => {
   console.log('Server is listening on port '+port);
-  control.launch();
 });
 
 process.on('SIGINT', () => {
