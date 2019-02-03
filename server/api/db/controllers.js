@@ -18,15 +18,11 @@ const db = require('mysql2/promise').createPool({
 exports.cPeers = new peers(db);
 console.log('Connected to MariaDB');
 
-const updater = async () => {
-  utils.VERSIONS = await self.cPeers.allFrom('scan_versions');
-  utils.PLATFORMS = await self.cPeers.allFrom('scan_platforms');
-  console.log('Versions and Platforms updated to cache!')
-}
+
 
 exports.launch = async () => {
   // Update constants VERSIONS and PLATFORMS
-  await updater()
+  // await updater()
   const updaterInterval = setInterval(()=>{updater()}, 1000*60*config.mariaDB.updateConstants);
 }
 
