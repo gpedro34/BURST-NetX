@@ -1,4 +1,5 @@
 # TODO:
+* Do documentation for GET API calls
 * API calls:
   * Get All Platforms
   * Get All versions
