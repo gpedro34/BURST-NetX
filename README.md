@@ -19,6 +19,8 @@ If you have a feature request, [create a new one here](https://github.com/gpedro
 # CONTRIBUTING
 Report issues in the [tracker](https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=) or by tagging @gpedro in this [Discord](https://discord.gg/2RSeRaG).
 
+Check [TODO list](https://github.com/gpedro34/BURST-NetX/blob/master/TODO.md)
+
 Great PRs and commits get glorious and fame in the [CREDITS.md of this repository](https://github.com/gpedro34/BURST-NetX/blob/master/CREDITS.md)!
 
 If you prefer to contribute with some BURST feel free to send it to BURST-R8SJ-V2FS-QF4V-DFMA9 or by using alias @NetX on BURST network. These funds will be used to fund further development.
