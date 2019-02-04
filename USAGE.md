@@ -1,50 +1,55 @@
-- Basic setup
+## Development mode:
+### Install:
+- Basic setup (script for npm install in server and client projects)
 ```
-npm run setup
-```
-
-- Clean setup (If you get "npm ERR! code ELIFECYCLE" running this was reported to solve on Windows 10)
-```
-npm cache verify
-npm run clean-setup
-```
-If doesn't work you may also consider to run:
-```
-npm cache clean --force
-npm run clean-setup
+./clean-dev-setup.sh
 ```
 
+### Start:
 - Starts Back-End and Front-End together (With Colors, Time and FE-BE tag)
 ```
-node launcher.js
+node dev-launcher.js
 ```
-
-- Starts Back-End and Front-End together (Time and FE-BE tag)
+or
+- Starts just Back-End - without frontend builded React in 'fe-build' folder
 ```
-npm run dev-bundle
+npm start
 ```
-
-- Starts just Back-End
-```
-npm run server
-```
-
-- Starts just Front-End
+and/or
+- Starts just Front-End -  in development server mode (unbuilded React)
 ```
 npm run dev-client
 ```
 
-- Build React Front-End
+## Production mode:
+### Install:
+- Setup:
 ```
-npm run build-client
+./clean-setup.sh
 ```
-
-- Serves builded React Front-end
+- Configure your server by editing the defaults.js file in the 'config' folder
+```
+nano config/defaults.js
+```
+### Start:
+- Starts Backend with builded React Frontend from folder 'fe-build' if folder exists and serves it at domain root path, if not do not serve anything at root path
+```
+node launcher.js
+```
+- If you want to serve Frontend and Backend in different servers instead, you can by doing so:
+Serve Frontend: (served from 'fe-build')
 ```
 npm run prod-client
 ```
+NOTE: Don't forget to set Environment Variable DOMAIN_API before building React source or your frontend will be doing the API calls to the API hosted at watchdog.burst-alliance.org domain
 
-- Serves builded React Front-end
+## Helpers:
+- Clean setup (If you get "npm ERR! code ELIFECYCLE" running this was reported to solve on Windows 10)
 ```
-npm run prod-client
+./clean-dev-setup
+```
+or if that didn't worked, you may also consider to run:
+```
+npm cache clean --force
+./clean-dev-setup
 ```
