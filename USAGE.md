@@ -46,7 +46,7 @@ NOTE: Don't forget to set Environment Variable DOMAIN_API before building React 
 ./clean-for-prod.sh
 ```
 - If you want to serve Frontend and Backend in different servers instead, you can by doing so:
-Serve Frontend from 'fe-build' folder:
 ```
 npm run prod-client
 ```
+NOTE: Serves Frontend from 'fe-build' folder
