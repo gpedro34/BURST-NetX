@@ -99,3 +99,42 @@ NOTE: Serves Frontend from 'fe-build' folder
 * DB_CON_LIMIT - Integer
   * Amount of simultaneous connections to keep in pool
   * Default: 10
+### Console logging configurations:
+* LOG_MODE - String
+  * options: tiny, dev, combined, common, short
+  * Refer to https://www.npmjs.com/package/morgan
+  * Default: dev  
+[For more information on logging data](https://www.npmjs.com/package/morgan)
+### File logging configurations:
+* LOG - Boolean
+  * true to log to ./server/logging/logs/ folder
+  * Default: false
+* LOG_NAME - String
+  * Any name to be appended to the log files name
+  * Default: API
+* LOG_INTERVAL - String
+  * Maximum interval to rotate log files
+  * Use s,m,h,d,M for time units
+  * Default: 1d
+* LOG_SIZE - String
+  * Maximum size per log file
+  * Use B,K,M,G for size units
+  * Default: 10K
+* LOG_COMPRESS - String
+  * Support for gzip compression
+  * Use false or 'gzip'
+  * Default: false
+* LOG_MAXSIZE - String
+  * Maximum size the logs folder will take
+  * Use B,K,M,G for size units
+  * Default: 100M
+* LOG_MAXFILES - Integer
+  * Max number of log files to keep
+  * Default: 30
+* LOG_INFO - Array of strings
+  * Information to include in logging
+* LOG_REQ_HEAD - Array of Strings
+  * Request headers to include in logging
+* LOG_RES_HEAD - Array of Strings
+  * Response headers to include in logging
+  [For more information on logging rotation](https://www.npmjs.com/package/rotating-file-stream)

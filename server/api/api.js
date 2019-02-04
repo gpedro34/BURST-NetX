@@ -4,6 +4,7 @@
 const express = require('express');
 const app = express();
 const morgan = require('morgan');
+
 const bodyParser = require('body-parser');
 
 // CORS
@@ -44,8 +45,45 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-// Logging
-app.use(morgan('dev'));
+// Logs to console
+app.use(morgan(defaults.logger.mode, {
+  skip: (req, res) => {
+    return  req._parsedUrl.path.indexOf('static') != -1 ||
+            req._parsedUrl.path.indexOf('manifest') != -1 ||
+            req._parsedUrl.path.indexOf('favicon') != -1
+    // Add future exceptions in here
+  }
+}));
+// Logs to file
+if(defaults.logger.log){
+  const logs = require('./../logging/policy');
+  let logInfo = '';
+  if(defaults.logger.info[0]){
+    defaults.logger.info.forEach((el)=>{
+      logInfo += '"'+el+'"';
+      if(el != defaults.logger.info[defaults.logger.info.length-1]){
+        logInfo += ',';
+      } else if(defaults.logger.reqHeaders[0]){
+        defaults.logger.reqHeaders.forEach((el)=>{
+          logInfo += '":req['+el+']"';
+          if(el != defaults.logger.reqHeaders[defaults.logger.reqHeaders.length-1]){
+            logInfo += ',';
+          } else if(defaults.logger.resHeaders[0]){
+            defaults.logger.resHeaders.forEach((el)=>{
+              logInfo += '":res['+el+']"';
+              if(el != defaults.logger.resHeaders[defaults.logger.resHeaders.length-1]){
+                logInfo += ',';
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+  app.use(morgan(logInfo, {
+    stream: logs.accessLogStream
+  }));
+}
 
 // Parsers for incoming data
 app.use(bodyParser.urlencoded({ extended: false }))
