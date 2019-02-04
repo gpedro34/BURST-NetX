@@ -9,23 +9,27 @@ const bodyParser = require('body-parser');
 // CORS
 var cors = require('cors');
 const defaults = require('./../../config/defaults');
-// Whitelists
+// CORS Whitelists
 let allowedOrigins = defaults.webserver.whitelistCORS;
-if(defaults.webserver.mode === "DEV"){
-  // Allows mobile and Postman tests
-  allowedOrigins.push(undefined);
-}
-if(process.env.CORS_WHITELISTED){
-  process.env.CORS_WHITELISTED.forEach((el)=>{
+if(process.env.CORS_WHITELIST){
+  if(process.env.DOMAIN_FE){
+    allowedOrigins.push(process.env.DOMAIN_FE);
+  }
+  process.env.CORS_WHITELIST.forEach((el)=>{
     allowedOrigins.push(el);
   });
 }
 // CORS SETUP
 const corsOptions = {
   origin: function(origin, callback){
-    if(defaults.mode === 'OPEN'){
+    if(defaults.webserver.mode === 'OPEN' || process.env.CORS_MODE === 'OPEN'){
       // Public API - Allow all origins
       return callback(null, true);
+    } else if(defaults.webserver.mode === "DEV" || process.env.CORS_MODE === 'DEV'){
+      // Allows mobile and Postman calls
+      if (origin === undefined){
+        return callback(null, true);
+      }
     } else if(allowedOrigins.indexOf(origin) === -1){
       // Block Request
       var msg = 'The CORS policy for this site does not ' +
@@ -38,17 +42,21 @@ const corsOptions = {
     return callback(null, true);
   }
 }
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json());
 app.use(cors(corsOptions));
 
-let bundleMode = process.env.PORT || defaults.bundle.mode;
+// Logging
+app.use(morgan('dev'));
+
+// Parsers for incoming data
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
+
+let bundleMode = process.env.BUNDLE_MODE || defaults.bundle.mode;
 try{
   const checkBuild = require('./../../fe-build/manifest.json');
   bundleMode = 'PROD';
 } catch {
-  bundleMode = 'DEV';
+  bundleMode = '';
 }
 
 if(bundleMode === 'PROD'){
