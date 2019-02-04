@@ -1,10 +1,8 @@
 # DONE:
 
 @gpedro34
-- IP Location
-- Public wallet API verification
-- SSL Checking
-- API
+- Backend and API
+- Automation scripts
 
 @shefass
 - React Front-End work
