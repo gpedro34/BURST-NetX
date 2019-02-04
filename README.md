@@ -5,6 +5,7 @@ NetX is an API, that hopefully will have a frontend in the near future for a Exp
 - NodeJS (>= v11.6.0)
 - MariaDB (>= v10.1.29)
 - [mysql shell](https://dev.mysql.com/downloads/windows/installer/8.0.html) installed and added to [system path](https://www.computerhope.com/issues/ch000549.htm) as 'mysql' (>= v8.0.14)
+  
 NOTE: Usually MariaDB distributions already come with mysql shell but if you are on Windows you may have to add it to system path...
 
 # USAGE
