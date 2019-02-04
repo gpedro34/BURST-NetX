@@ -9,7 +9,7 @@ NetX is an API, that hopefully will have a frontend in the near future for a Exp
 NOTE: Usually MariaDB distributions already come with mysql shell but if you are on Windows you may have to add it to system path...
 
 # USAGE
-[See USAGE.md for further information on scripts](https://github.com/gpedro34/BURST-NetX/blob/master/USAGE.md)
+[See USAGE.md](https://github.com/gpedro34/BURST-NetX/blob/master/USAGE.md)
 
 # API
 [Documentation on the API usage](https://documenter.getpostman.com/view/4955736/RztivWPm)
