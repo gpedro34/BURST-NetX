@@ -6,8 +6,8 @@ var exit = require('exit');
 
 (async ()=>{
   const fail = await concurrently([
-    {command: 'npm start', name: 'BE', prefixColor: ['bold','bgBlue']},
-  ], {
+    {command: 'npm start', name: 'BE', prefixColor: ['bold','bgRed']},
+    {command: 'npm run dev-client', name: 'FE', prefixColor: ['bold','bgBlue']},  ], {
       prefix: '[{time}-{name}]',
       timestampFormat: 'HH:mm:ss',
       killOthers: ['failure', 'success'],

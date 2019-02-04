@@ -14,13 +14,10 @@
     "crawler"
   ],
   "scripts": {
-    "setup": "npm install && cd client && npm install && cd ..",
-    "clean-setup": "bash ./clean-setup.sh",
-    "server": "node server/server.js",
+    "start": "node server/server.js",
     "dev-client": "npm start --prefix client",
-    "build-client": "echo Hope you didn't forgot to set DOMAIN_API && echo before running this script or you will be using fallback API && echo If react builder fails in CSS and JS files keep trying... && rm -rf fe-build && cd client/src && rm -rf build && npm run build && mv ./../build ./../../fe-build\"",
-    "prod-client": "serve -s fe-build -l 3000",
-    "dev-bundle": "node launcher.js"
+    "build-client": "echo Hope you didn't forgot to set env.DOMAIN_API && echo before running this script or you will be using fallback API && echo If react builder fails in CSS and JS files keep trying... && rm -rf fe-build && cd client/src && rm -rf build && npm run build && mv ./../build ./../../fe-build\"",
+    "prod-client": "serve -s fe-build -l 3000"
   },
   "author": "gpedro",
   "license": "GPL-3.0-or-later",
