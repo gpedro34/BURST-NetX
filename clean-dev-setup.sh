@@ -6,6 +6,4 @@ rm -rf node_modules && rm -rf fe-build && rm ./package-lock.json && npm install 
 
 cd client && rm -rf node_modules && rm -rf build && npm install && chmod -R a+rwx ./node_modules && cd ..
 
-npm run build-client
-
 exit

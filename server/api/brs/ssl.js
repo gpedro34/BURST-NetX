@@ -80,6 +80,7 @@ const domainCheck = async (domain) => {
     try{
       resLoc = await location.locate(domain);
     } catch(err){
+      console.log('Something went wrong. Report Exception 50 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
       console.log(err)
     }
     if(!resSSL || resSSL.error){

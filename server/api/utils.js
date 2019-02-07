@@ -10,40 +10,8 @@ exports.readFileTrim = (file) => {
 };
 
 const config = require('./../../config/defaults');
-const cPeers = require('./db/controllers').cPeers;
 const self = require('./utils');
 
-// Versions Indexer
-exports.VERSIONS;
-// Platforms Indexer
-exports.PLATFORMS;
-
-// Resolve Version ID
-exports.getVersion = (id) => {
-  let v
-  self.VERSIONS.forEach((vers)=>{
-    if(vers.id === id){
-      v = vers.version;
-    }
-  });
-	if(!v){
-		v = '';
-	}
-  return v;
-}
-// Resolve Platform ID
-exports.getPlatform = (id) => {
-  let pl;
-  self.PLATFORMS.forEach((platf)=>{
-    if(platf.id === id){
-      pl = platf.platform;
-    }
-  });
-	if(!pl){
-		pl = '';
-	}
-  return pl;
-}
 // Resume scan measurements
 exports.resumeMeasurements = async (ob) => {
 	const arr = ob.measurements;

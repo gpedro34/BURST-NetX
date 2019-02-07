@@ -1,1 +1,4 @@
 /node_modules
+/fe-build
+*.log
+*.txt
