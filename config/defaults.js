@@ -45,7 +45,7 @@ exports.brs = {
 exports.logger = {
   // Console logging
   // Refer to https://www.npmjs.com/package/morgan
-  "mode": 'dev'            // options: tiny, dev, combined, common, short
+  "mode": 'dev',            // options: tiny, dev, combined, common, short
   // Log to file configurations
   // You should refer to https://www.npmjs.com/package/rotating-file-stream
   "log": false,              // true to log to ./server/logging/logs/ folder
