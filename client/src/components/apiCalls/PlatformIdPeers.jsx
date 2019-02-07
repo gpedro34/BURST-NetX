@@ -50,7 +50,7 @@ class PlatformIdPeers extends Component {
   render() {
     const { error, isLoaded, apiAnswer } = this.state;
     if (error) {
-      return <div>Error: {error.message}</div>;
+      return <div id="error">Error: {error.message}</div>;
     } else if (!isLoaded) {
       return <div id="loading">Loading...</div>;
     } else {
