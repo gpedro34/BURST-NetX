@@ -35,10 +35,8 @@ const peersByPlatform = async (id, platform) => {
     // Search by platform ID
     plat = await control.platforms(Number(id), null);
   }
-  if(!plat[0]){
-    // No such version in DB
-    return plat;
-  } else {
+  console.log(typeof plat)
+  if(typeof plat !== 'undefined' && plat) {
     let peers;
     peers = await control.getPeersByPlatformId(plat[0].id);
     let completePeers = [];
@@ -52,6 +50,9 @@ const peersByPlatform = async (id, platform) => {
         id: plat[0].id,
         peers: completePeers
     };
+  } else {
+    // No such version in DB
+    return plat;
   }
 }
 // Get peers by Version
@@ -171,7 +172,8 @@ exports.peersPost = async (req, res) => {
     } else {
       // Send the error as JSON and log it
       const err = {
-        error: 'Something went wrong with DB call - Report Exception 10 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='
+        error: 'Something went wrong with DB call - Report Exception 10 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=',
+        params: req.params
       };
       console.error(err);
       res.send(err);
@@ -197,7 +199,7 @@ exports.peersGet = async (req, res) => {
         break;
       case 'getPeersByPlatformId':
         req.params.id = Number(req.params.id)
-        if(isNaN(req.params.id)){
+        if(isNaN(req.params.id) || req.params.id <= 0){
           obj = {"error": "Please enter a valid platform ID"};
         } else {
           obj = await peersByPlatform(req.params.id, null);
@@ -230,6 +232,7 @@ exports.peersGet = async (req, res) => {
     if(obj){
       if(obj.error){
         // Send the error
+        console.log(obj)
         res.send(obj);
         return;
       } else if(req.params.requestType !== 'getPeersByPlatform' &&
@@ -247,7 +250,8 @@ exports.peersGet = async (req, res) => {
     } else {
       // Send the error as JSON and log it
       const err = {
-        error: 'Something went wrong with DB call - Report Exception 30 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='
+        error: 'Something went wrong with DB call - Report Exception 30 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=',
+        params: req.params
       };
       console.error(err);
       res.send(err);
