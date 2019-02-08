@@ -1,14 +1,15 @@
 'use strict';
 
 const utils = require('./../utils');
+const brs = require('./../brs/calls');
 
 class Peers {
   constructor(db) {
 		this.db = db;
 	}
 
-  // All from table (optional ID to search for)
-  async allFrom(table, id) {
+  // Search from a table
+  async allFrom(table, id, prop, order) {
     const dbc = await this.db.getConnection();
     let ob = [];
     let query = 'SELECT * from '+table;
@@ -17,11 +18,26 @@ class Peers {
       await dbc.beginTransaction();
       let res;
       if(id){
+        if(!order){
+          order = 'DESC';
+        }
+        if(!prop){
+          prop = 'peer_id';
+        }
         if(table === 'scans'){
-          query += ' WHERE peer_id = ?';
+          query += ' WHERE '+prop+' = ?'
+                  +' ORDER BY block_height '+order;
           arr.push(id);
         } else {
-          query += ' WHERE id = ?'
+          if(!prop){
+            prop = 'id';
+          }
+          if(!order){
+            order = 'ASC';
+          }
+
+          query += ' WHERE '+prop+' = ?'
+                +' ORDER BY '+prop+' '+order;
           arr.push(id);
         }
       }
@@ -38,6 +54,7 @@ class Peers {
             version: res[a].version
           });
         } else if (table === 'scans'){
+          res[a].result = brs.SCAN_RESULT[res[a].result];
           ob.push({
             id: res[a].id,
             peerId: res[a].peer_id,
@@ -48,6 +65,16 @@ class Peers {
             platformId: res[a].platform_id,
             peersCount: res[a].peers_count,
             blockHeight: res[a].block_height
+          });
+        } else if (table === 'peers'){
+          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          ob.push({
+            id: res[a].id,
+            address: res[a].address,
+            blocked: res[a].blocked,
+            discovered: res[a].first_seen,
+            lastSeen: res[a].last_seen,
+            lastScanned: res[a].last_scanned
           });
         }
       }
@@ -73,7 +100,8 @@ class Peers {
       query += 'WHERE id = ?'
             + ' ORDER BY id ASC';
       arr.push(id);
-    } else if (limit){
+    }
+    if (limit){
       query += 'WHERE id'
             + ' BETWEEN '+start
             + ' AND '+(limit+start-1)
@@ -119,8 +147,10 @@ class Peers {
           ob.push({ error: 'There is no peer with such address' });
         } else if (id){
           ob.push({ error: 'There is no peer with such id' });
+        } else if(res){
+          ob.push({ error: "The 'start' parameter in your query must be a valid peer ID in our DB" });
         } else {
-          ob.push({ error: 'Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
+          ob.push({ error: 'Something went wrong. Report Exception 26 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
         }
         dbc.release();
         return ob;
@@ -130,8 +160,10 @@ class Peers {
         ob.push({ error: 'There is no peer with such address' });
       } else if (id){
         ob.push({ error: 'There is no peer with such id' });
+      } else if(res && !res[0]){
+        ob.push({ error: "The 'start' parameter in your query must be a valid peer ID in our DB" });
       } else {
-        ob.push({ error: 'Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
+        ob.push({ error: 'Something went wrong. Report Exception 25 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
       }
       console.log('Errored');
       console.log(err);
@@ -201,8 +233,8 @@ class Peers {
         } else if(platform) {
           return {error: 'There is no platform with that Name'};
         } else {
-          console.error('Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
-          return {error: 'Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+          console.error('Something went wrong. Report Exception 24 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+          return {error: 'Something went wrong. Report Exception 24 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
         }
       }
     }catch(err){
@@ -211,8 +243,8 @@ class Peers {
       } else if(platform) {
         return {error: 'There is no platform with that Name'};
       } else {
-        console.error('Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
-        return {error: 'Something went wrong. Report Exception 20 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+        console.error('Something went wrong. Report Exception 23 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+        return {error: 'Something went wrong. Report Exception 23 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
       }
     }
   }
@@ -262,8 +294,8 @@ class Peers {
         } else if(platform) {
           return {error: 'There is no version with that Name'};
         } else {
-          console.error('Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
-          return {error: 'Something went wrong. Report Exception 21 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
+          console.error('Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=');
+          return {error: 'Something went wrong. Report Exception 22 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title='}
         }
       }
     }catch(err){
@@ -309,7 +341,7 @@ class Peers {
     const dbc = await this.db.getConnection();
     await dbc.beginTransaction();
     const [res] = await dbc.execute(
-      'SELECT DISTINCT peer_id, block_height from scans'
+      'SELECT DISTINCT peer_id from scans'
     +' WHERE (result = 0 AND block_height >= '+height+')'
     +' ORDER BY block_height DESC'
     , []);
@@ -319,6 +351,7 @@ class Peers {
     })
     return ob;
   }
+
 }
 
 module.exports = Peers;

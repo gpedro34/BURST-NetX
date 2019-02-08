@@ -23,15 +23,15 @@ exports.resumeMeasurements = async (ob) => {
 	let lastRec, state;
 	if(arr){
 		arr.forEach((el)=>{
-			if(el[1] !== 0){
+			if(el[1] !== 0 && el[1] != 'Success'){
 				failCount++;
-				if(el[1] === 1){
+				if(el[1] === 1 || el[1] == 'Error UNKNOWN'){
 					state = 'Unknown error';
-				} else if(el[1] === 2){
+				} else if(el[1] === 2 || el[1] == 'Error TIMEOUT'){
 					state = 'Timed out';
-				} else if(el[1] === 3){
+				} else if(el[1] === 3 || el[1] == 'Error REFUSED'){
 					state = 'Refused';
-				} else if(el[1] === 4){
+				} else if(el[1] === 4 || el[1] == 'Error REDIRECT'){
 					state = 'Wallet is redirecting P2P port traffic';
 				}
 			} else {

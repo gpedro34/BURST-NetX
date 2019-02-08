@@ -19,26 +19,32 @@ exports.BRS_REQUESTS = {
 exports.BRS_API_REQUESTS = {
 	TIME: 'getTime',
 };
+exports.BLOCK_REASONS = ['No',	'Illegal Address'];
 
+exports.SCAN_RESULT = ['Success',	'Error UNKNOWN', 'Error TIMEOUT', 'Error REFUSED', 'Error REDIRECT'];
 // if no port or equal to 8123 then port equal to 8125,otherwise keep it
 // and add '/burst?requestType=' API point if check is not true
 exports.normalizeAPI = (peer, check) => {
-	if (peer.indexOf(':', peer.indexOf(']')) < 0 || peer.indexOf(':', peer.indexOf('/')) < 0) {
+	if(peer){
+		if (peer.indexOf(':', peer.indexOf(']')) < 0 || peer.indexOf(':', peer.indexOf('/')) < 0) {
 		return peer+':'+self.BRS_DEFAULT_API_PORT + '/burst?requestType=';
-	} else if(peer.slice(peer.indexOf(':', peer.indexOf('/'))+1) == self.BRS_DEFAULT_PEER_PORT){
-    peer = peer.slice(0, peer.indexOf(':', peer.indexOf('/'))) + ':' + self.BRS_DEFAULT_API_PORT;
-		if(!check){
-			return peer+'/burst?requestType=';
+		} else if(peer.slice(peer.indexOf(':', peer.indexOf('/'))+1) == self.BRS_DEFAULT_PEER_PORT){
+	    peer = peer.slice(0, peer.indexOf(':', peer.indexOf('/'))) + ':' + self.BRS_DEFAULT_API_PORT;
+			if(!check){
+				return peer+'/burst?requestType=';
+			} else {
+				return peer;
+			}
 		} else {
-			return peer;
-		}
+			if(!check){
+	    	return peer+'/burst?requestType=';
+			} else {
+				return peer;
+			}
+	  }
 	} else {
-		if(!check){
-    	return peer+'/burst?requestType=';
-		} else {
-			return peer;
-		}
-  }
+
+	}
 }
 
 // Does both P2P and API requests

@@ -46,6 +46,7 @@ const peersByPlatform = async (id, platform) => {
       const completePeer = await control.completeForCall(el.id);
       completePeers.push({id:el.id, address: completePeer});
     });
+    completePeers.sort((a,b)=>{return a.id-b.id});
     return {
         platform: plat[0].platform,
         id: plat[0].id,
@@ -75,6 +76,7 @@ const peersByVersion = async (id, version) => {
       const completePeer = await control.completeForCall(el.id);
       completePeers.push({id:el.id, address: completePeer});
     });
+    completePeers.sort((a,b)=>{return a.id-b.id});
     return {
         version: ver[0].version,
         id: ver[0].id,
@@ -96,6 +98,7 @@ const peersByHeight = async (height) => {
       const completePeer = await control.completeForCall(el.id);
       completePeers.push({id:el.id, address: completePeer});
     });
+    completePeers.sort((a,b)=>{return a.id-b.id});
     return {
         overHeight: height,
         peers: completePeers
@@ -124,6 +127,7 @@ const completeGetPeers = (req, res, obj)=>{
     ob.peers.push(resume);
     if(ob.peers.length === obj.length){
       // Send the results
+      ob.peers.sort((a,b)=>{return a.id-b.id});
       res.send(ob);
       return ob;
     }
@@ -179,7 +183,12 @@ exports.peersPost = async (req, res) => {
 }
 // Handles the GET requests
 exports.peersGet = async (req, res) => {
-  req.params.requestType = req.route.path.slice(req.route.path.indexOf('get'), req.route.path.indexOf('/', req.route.path.indexOf('get')));
+  if(!req.params.requestType){
+    req.params.requestType = req.route.path.slice(
+      req.route.path.indexOf('get'),
+      req.route.path.indexOf('/', req.route.path.indexOf('get')
+    ));
+  }
   let obj = {};
   if(req.params.requestType){
     switch(req.params.requestType){
@@ -207,7 +216,7 @@ exports.peersGet = async (req, res) => {
         break;
       case 'getPeersByHeight':
         obj = await peersByHeight(Number(req.params.height));
-        if(!obj[0]){
+        if(!obj.overHeight){
           obj = {"error": "We are yet to see a peer over height "+req.params.height}
         }
         break;
@@ -223,12 +232,15 @@ exports.peersGet = async (req, res) => {
         // Send the error
         res.send(obj);
         return;
-      } else if(req.params.requestType !== 'getPeersByPlatform' && req.params.requestType !== 'getPeersByVersion' && req.params.requestType !== 'getPeersByHeight' && req.params.requestType !== 'getPeersByPlatformId' && req.params.requestType !== 'getPeersByVersionId'){
+      } else if(req.params.requestType !== 'getPeersByPlatform' &&
+                req.params.requestType !== 'getPeersByVersion' &&
+                req.params.requestType !== 'getPeersByHeight' &&
+                req.params.requestType !== 'getPeersByPlatformId' &&
+                req.params.requestType !== 'getPeersByVersionId'){
         // for getPeersById
         await completeGetPeers(req, res, obj.peers);
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls
-        console.log(obj)
         res.send(obj);
         return;
       }

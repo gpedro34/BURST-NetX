@@ -12,8 +12,8 @@ exports.mariaDB = {
 // Backend Configurations
 exports.webserver = {
   // default: "DEV"     -> will whitelist undefined origins
-  // can also be "OPEN" -> will turn API public
-  // leave "" if you just want CORS to be open to whitelisted domains
+  // can also be "OPEN" -> will turn API public (accept all origins)
+  // leave "" if you just want CORS to be open to whitelisted domains only
   "mode": "DEV",
   // add allowed CORS origins
   "whitelistCORS": [
@@ -22,13 +22,25 @@ exports.webserver = {
   // default: 5000
   "port": 5000,
   // default 25 - max amount of results provided through API getPeersById
-  "limitPeersPerAPIcall": 25
+  "limitPeersPerAPIcall": 25,
+  "searchEngine":{
+    // getAll Queries
+    "searchQueries": true,
+    /* Experimental mode
+    Ok to run locally - Disabled by default
+    Beaware that you will be performing a lot of calculations
+    Running locally I've an avg of 90 seconds to respond to
+    getAll?from=peers&completePeers=true
+    which returns all peers in DB
+    with uptime, location, ssl and public API check */
+    "completePeers": false
+  }
 };
 // Bundle Backend + Frontend Configurations
 exports.bundle = {
   // Default: "DEV" - will not load frontend as it has no build yet
   // Can also be "PROD" - will have frontend at domain root
-  // served as static code from 'fe-build' folder
+  //                      served as static code from 'fe-build' folder
   "mode": "PROD"
 };
 // BRS related Configurations
@@ -45,10 +57,10 @@ exports.brs = {
 exports.logger = {
   // Console logging
   // Refer to https://www.npmjs.com/package/morgan
-  "mode": 'dev',            // options: tiny, dev, combined, common, short
+  "mode": 'dev',           // options: tiny, dev, combined, common, short
   // Log to file configurations
   // You should refer to https://www.npmjs.com/package/rotating-file-stream
-  "log": false,              // true to log to ./server/logging/logs/ folder
+  "log": false,             // true to log to ./server/logging/logs/ folder
   "interval": '1d',         // Use s,m,h,d,M for time units
   "size": '10K',            // Use B,K,M,G for size units (Single file)
   "compress": false,        // false or 'gzip' for data compression

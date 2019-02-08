@@ -4,6 +4,7 @@ const db = require('./../db/mariadb');
 const utils = require('./../utils');
 const ssl = require('./../brs/ssl');
 const brs = require('./../brs/calls');
+const brsUtils = require('./../brs/utils');
 
 const control = require('./../db/controllers').cPeers;
 
@@ -51,24 +52,23 @@ exports.peerGet = async (req, res) => {
     obj = await control.peers(null, req.params.address);
   } else {
     obj = {
-      error: 'Invalid Peer ID or Address'
+      "error": "You must specify an 'id' or 'address' in your query"
     }
-    // Send the results
+    // Send the error
     res.send(obj);
-    return;
   }
-  if(obj.error){
+  if(obj[0].error){
     // Send the results
-    res.send(obj);
-    return;
+    res.send(obj[0]);
+  } else {
+    // Complete peer information
+    const comp = await control.completePeer(obj[0]);
+    // Resume Measurements
+    const resume = await utils.resumeMeasurements(comp);
+    // SSL, location and wallet check
+    const walletData = await ssl.checkNode(brs.normalizeAPI(resume.address, true));
+    resume.info = walletData;
+    // Send the results
+    res.send(resume);
   }
-  // Complete peer information
-  const comp = await control.completePeer(obj[0]);
-  // Resume Measurements
-  const resume = await utils.resumeMeasurements(comp);
-  // SSL, location and wallet check
-  const walletData = await ssl.checkNode(brs.normalizeAPI(resume.address, true));
-  resume.info = walletData;
-  // Send the results
-  res.send(resume);
 }
