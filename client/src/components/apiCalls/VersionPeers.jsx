@@ -26,14 +26,10 @@ class VersionPeers extends Component {
     })
     console.log("antras")
   }
-  
-
+ 
   apicallAll = () => {
     axios
-    .post(apiAddress + "api/peers", {
-        requestType: "peersbyVersion",
-        version: this.props.version
-      })
+    .get(apiAddress + "api/peers?requestType=getPeersByVersion&version="+this.props.version)
       .then(
         result => {
             this.setState({

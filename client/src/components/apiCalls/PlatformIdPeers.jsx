@@ -27,10 +27,7 @@ class PlatformIdPeers extends Component {
 
   apicallAll = () => {
     axios
-      .post(apiAddress + "api/peers", {
-        requestType: "peersbyPlatform",
-        id: this.props.id
-      })
+      .get(apiAddress + "api/peers?requestType=getPeersByPlatform&id="+this.props.id)
       .then(
         result => {
           this.setState({

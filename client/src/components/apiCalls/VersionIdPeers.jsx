@@ -18,7 +18,7 @@ class VersionIdPeers extends Component {
    
     
   }
-
+ 
   componentWillReceiveProps() {
     setTimeout(this.apicallAll, 200);
     this.setState({
@@ -30,10 +30,7 @@ class VersionIdPeers extends Component {
 
   apicallAll = () => {
     axios
-    .post(apiAddress + "api/peers", {
-        requestType: "peersbyVersion",
-        id: this.props.id
-      })
+    .get(apiAddress + "api/peers?requestType=getPeersByVersion&id="+this.props.id)
       .then(
         result => {
             this.setState({

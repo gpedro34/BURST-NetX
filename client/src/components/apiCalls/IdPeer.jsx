@@ -26,13 +26,10 @@ class IdPeer extends Component {
     })
     console.log("antras")
   }
-  
 
   apicallAll = () => {
     axios
-    .post(apiAddress + "api/peer", {
-        id: this.props.id
-      })
+    .get(apiAddress + "api/peer?id="+this.props.id)
       .then(
         result => {
             this.setState({

@@ -27,13 +27,10 @@ class AddressPeer extends Component {
     })
     console.log("antras")
   }
-  
-
+ 
   apicallAll = () => {
     axios
-    .post(apiAddress + "api/peer", {
-        address: this.props.address
-      })
+    .get(apiAddress + "api/peer?address="+this.props.address)
       .then(
         result => {
             this.setState({

@@ -27,13 +27,10 @@ class HeightPeer extends Component {
     console.log("antras")
   }
   
-
+  
   apicallAll = () => {
     axios
-    .post(apiAddress + "api/peers", {
-        requestType: "peersbyHeight",
-        height: this.props.height
-      })
+    .get(apiAddress + "api/peers?requestType=getPeersByHeight&height="+this.props.height)
       .then(
         result => {
             this.setState({

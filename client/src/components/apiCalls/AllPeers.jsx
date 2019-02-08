@@ -22,14 +22,10 @@ class AllPeers extends Component {
       isLoaded: false
     });
   }
-
+  
   apicallAll = () => {
     axios
-      .post(apiAddress + "api/peers", {
-        requestType: "peers",
-        start: this.props.startFromId,
-        howMany: this.props.amaunt
-      })
+      .get(apiAddress + "api/peers?requestType=getPeersById&start="+this.props.startFromId+"&howMany="+this.props.amaunt)
       .then(
         result => {
           this.setState({

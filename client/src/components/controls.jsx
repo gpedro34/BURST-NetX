@@ -159,7 +159,7 @@ class Controls extends Component {
             type="number"
           />
         </form>
-        <form className="Forms" onSubmit={this.peerFilter}>
+       {/*<form className="Forms" onSubmit={this.peerFilter}> 
           <input className="Buttons" type="submit" value="Filter by Uptime" />
           <br />
           <input
@@ -168,7 +168,7 @@ class Controls extends Component {
             ref="uptime"
             type="number"
           />
-        </form>
+    </form> */}
       </div>
     );
   }

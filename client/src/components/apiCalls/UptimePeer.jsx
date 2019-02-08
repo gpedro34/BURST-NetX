@@ -25,11 +25,7 @@ class UptimePeer extends Component {
 
   apicallAll = () => {
     axios
-      .post(apiAddress + "api/peers", {
-        requestType: "peers",
-        start: 1,
-        amount: -1
-      })
+    .get(apiAddress + "api/peers?requestType=getPeersById&start=&howMany=")  //i will change it to getALL
       .then(
         result => {
           this.setState({
