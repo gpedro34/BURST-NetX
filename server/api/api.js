@@ -116,7 +116,7 @@ if(bundleMode === 'PROD'){
 
 // APi Docs at http://localhost:5000/docs
 app.get('/docs', (req, res) => {
-    res.redirect('https://documenter.getpostman.com/view/4955736/RztivWPm');
+    res.redirect('https://documenter.getpostman.com/view/4955736/RztoNUU6');
 });
 
 // API Routes
