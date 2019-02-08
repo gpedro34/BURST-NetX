@@ -56,6 +56,7 @@ exports.peerGet = async (req, res) => {
     }
     // Send the error
     res.send(obj);
+    return ;
   }
   if(obj[0].error){
     // Send the results

@@ -35,21 +35,24 @@ const peersByPlatform = async (id, platform) => {
     // Search by platform ID
     plat = await control.platforms(Number(id), null);
   }
-  console.log(typeof plat)
   if(typeof plat !== 'undefined' && plat) {
     let peers;
-    peers = await control.getPeersByPlatformId(plat[0].id);
-    let completePeers = [];
-    await utils.asyncForEach(peers, async (el)=>{
-      const completePeer = await control.completeForCall(el.id);
-      completePeers.push({id:el.id, address: completePeer});
-    });
-    completePeers.sort((a,b)=>{return a.id-b.id});
-    return {
-        platform: plat[0].platform,
-        id: plat[0].id,
-        peers: completePeers
-    };
+    try{
+      peers = await control.getPeersByPlatformId(plat[0].id);
+      let completePeers = [];
+      await utils.asyncForEach(peers, async (el)=>{
+        const completePeer = await control.completeForCall(el.id);
+        completePeers.push({id:el.id, address: completePeer});
+      });
+      completePeers.sort((a,b)=>{return a.id-b.id});
+      return {
+          platform: plat[0].platform,
+          id: plat[0].id,
+          peers: completePeers
+      };
+    } catch (err) {
+      return {'error': 'There is no such platform'};
+    }
   } else {
     // No such version in DB
     return plat;
@@ -66,23 +69,27 @@ const peersByVersion = async (id, version) => {
     // Search by version ID
     ver = await control.versions(Number(id), null);
   }
-  if(!ver[0]){
+  if(typeof ver !== 'undefined' && ver) {
+    let peers;
+    try{
+      peers = await control.getPeersByVersionId(ver[0].id);
+      let completePeers = [];
+      await utils.asyncForEach(peers, async (el)=>{
+        const completePeer = await control.completeForCall(el.id);
+        completePeers.push({id:el.id, address: completePeer});
+      });
+      completePeers.sort((a,b)=>{return a.id-b.id});
+      return {
+          version: ver[0].version,
+          id: ver[0].id,
+          peers: completePeers
+      };
+    } catch (err) {
+      return {'error': 'There is no such version'};
+    }
+  } else {
     // No such version in DB
     return ver
-  } else {
-    let peers;
-    peers = await control.getPeersByVersionId(ver[0].id);
-    let completePeers = [];
-    await utils.asyncForEach(peers, async (el)=>{
-      const completePeer = await control.completeForCall(el.id);
-      completePeers.push({id:el.id, address: completePeer});
-    });
-    completePeers.sort((a,b)=>{return a.id-b.id});
-    return {
-        version: ver[0].version,
-        id: ver[0].id,
-        peers: completePeers
-    };
   }
 }
 // Get peers by Height
@@ -232,7 +239,6 @@ exports.peersGet = async (req, res) => {
     if(obj){
       if(obj.error){
         // Send the error
-        console.log(obj)
         res.send(obj);
         return;
       } else if(req.params.requestType !== 'getPeersByPlatform' &&
@@ -255,9 +261,11 @@ exports.peersGet = async (req, res) => {
       };
       console.error(err);
       res.send(err);
+      return;
     }
   } else {
     // Send the error as JSON
     res.send({error: 'Not a valid API call'});
+    return;
   }
 }
