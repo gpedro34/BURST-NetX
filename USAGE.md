@@ -80,7 +80,7 @@ NOTE: Serves Frontend from 'fe-build' folder
   NOTE: CORS Whitelisted addresses will always be accepted independently of this mode.
 * CORS_WHITELIST - Array
   * if set to ['http://localhost:5000'] will accept all API calls from localhost:5000. You can list as many as you like in here...
-### MariaDB Server configuration:
+### MariaDB Connection configuration:
 * DB_HOST - String
   * Host name or IP of the MariaDB server to connect
   * Default: localhost
@@ -136,5 +136,6 @@ NOTE: Serves Frontend from 'fe-build' folder
 * LOG_REQ_HEAD - Array of Strings
   * Request headers to include in logging
 * LOG_RES_HEAD - Array of Strings
-  * Response headers to include in logging
+  * Response headers to include in logging  
+    
   [For more information on logging rotation](https://www.npmjs.com/package/rotating-file-stream)
