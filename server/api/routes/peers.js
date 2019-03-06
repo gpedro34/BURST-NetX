@@ -2,7 +2,10 @@
 
 const control = require('./../db/controllers').cPeers;
 const utils = require('./../utils');
+const brs = require('./../lib/calls');
+const ssl = require('./../lib/ssl');
 const limitPeers = require('./../../../config/defaults').webserver.limitPeersPerAPIcall;
+const def = require('./../../../config/defaults');
 
 // Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
@@ -125,14 +128,10 @@ const completeGetPeers = (req, res, obj)=>{
       res.send(comp);
       return comp;
     }
-    // Resume Measurements
-    const resume = await utils.resumeMeasurements(comp);
-    if(resume.error){
-      // Send the error
-      res.send(resume);
-      return resume;
+    if(def.webserver.useUtilsCrawler){
+      comp.info = await control.getInfo({id: comp.id});
     }
-    ob.peers.push(resume);
+    ob.peers.push(comp);
     if(ob.peers.length === obj.length){
       // Send the results
       ob.peers.sort((a,b)=>{return a.id-b.id});
@@ -141,55 +140,7 @@ const completeGetPeers = (req, res, obj)=>{
     }
   });
 }
-// Handles the POST request
-exports.peersPost = async (req, res) => {
-  let obj = {};
-  let ob = {
-    peers:[]
-  };
-  if(req.body.requestType){
-    switch(req.body.requestType){
-      case 'peersByPlatform':
-        obj = await peersByPlatform(req.body.id, req.body.platform);
-        break;
-      case 'peersByVersion':
-        obj = await peersByVersion(req.body.id, req.body.version);
-        break;
-      case 'peersByHeight':
-        obj = await peersByHeight(req.body.height);
-        break;
-      case 'peers':
-        obj = await peers(req.body.start, req.body.howMany);
-        break;
-    }
-    if(obj){
-      if(obj.error){
-        // Send the error already handled
-        res.send(obj);
-        return;
-      }
-      if(req.body.requestType !== 'peersByPlatform' && req.body.requestType !== 'peersByVersion' && req.body.requestType !== 'peersByHeight'){
-        // for peers APi call
-        completeGetPeers(req, res, obj);
-      } else {
-        // for peersbyPlatform, peersByVersion, peersByHeight API calls
-        res.send(obj);
-        return;
-      }
-    } else {
-      // Send the error as JSON and log it
-      const err = {
-        error: 'Something went wrong with DB call - Report Exception 10 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=',
-        params: req.params
-      };
-      console.error(err);
-      res.send(err);
-    }
-  } else {
-    // Send the error as JSON
-    res.send({error: 'Not a valid API call'});
-  }
-}
+
 // Handles the GET requests
 exports.peersGet = async (req, res) => {
   if(!req.params.requestType){
@@ -241,12 +192,7 @@ exports.peersGet = async (req, res) => {
         // Send the error
         res.send(obj);
         return;
-      } else if(req.params.requestType !== 'getPeersByPlatform' &&
-                req.params.requestType !== 'getPeersByVersion' &&
-                req.params.requestType !== 'getPeersByHeight' &&
-                req.params.requestType !== 'getPeersByPlatformId' &&
-                req.params.requestType !== 'getPeersByVersionId'){
-        // for getPeersById
+      } else if(req.params.requestType === 'getPeersById'){
         await completeGetPeers(req, res, obj.peers);
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls

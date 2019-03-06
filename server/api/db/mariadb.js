@@ -1,13 +1,25 @@
 'use strict';
 
 const utils = require('./../utils');
-const brs = require('./../brs/calls');
+const brs = require('./../lib/calls');
+
+const BLOCK_REASONS = {
+	NOT_BLOCKED: 0,
+	ILLEGAL_ADDRESS: 1,
+	NEW_IP: 2
+};
+const SSL_CODES = {
+  VALID: 0,
+  INVALID: 1,
+  NOT_FOUND: 2,
+  IP_MISMATCH: 3,
+  EXPIRED: 4
+}
 
 class Peers {
   constructor(db) {
 		this.db = db;
 	}
-
   // Search from a table
   async allFrom(table, id, prop, order) {
     const dbc = await this.db.getConnection();
@@ -76,6 +88,51 @@ class Peers {
             lastSeen: res[a].last_seen,
             lastScanned: res[a].last_scanned
           });
+        } else if (table === 'checks'){
+          ob.push({
+            id: res[a].id,
+            ip: res[a].ip,
+            hash: res[a].hash,
+            peerId: res[a].peer_id,
+            blocked: res[a].blocked,
+            locId: res[a].loc_id,
+            sslId: res[a].ssl_id,
+            api: res[a].api,
+            lastScanned: res[a].last_scanned
+          });
+        } else if (table === 'ssl_checks'){
+          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          switch(res[a].ssl_status){
+            case SSL_CODES.VALID:
+              res[a].ssl_status = 'Valid';
+              break;
+            case SSL_CODES.INVALID:
+              res[a].ssl_status = 'Invalid';
+              break;
+            case SSL_CODES.NOT_FOUND:
+              res[a].ssl_status = 'Not found';
+              break;
+            case SSL_CODES.IP_MISMATCH:
+              res[a].ssl_status = 'IP mismatch detected';
+              break;
+            case SSL_CODES.EXPIRED:
+              res[a].ssl_status = 'Expired';
+              break;
+          }
+          ob.push({
+            id: res[a].ssl_id,
+            ssl: res[a].ssl_status,
+            sslFrom: res[a].ssl_from,
+            sslTo: res[a].ssl_to,
+            hash: res[a].hash
+          });
+        } else if (table === 'loc_checks'){
+          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          ob.push({
+            id: res[a].loc_id,
+            country: res[a].country_city.slice(0, res[a].country_city.indexOf(', ')),
+            city: res[a].country_city.slice(res[a].country_city.indexOf(', ')+2, res[a].country_city.length)
+          });
         }
       }
     } catch(err){
@@ -100,17 +157,15 @@ class Peers {
       query += 'WHERE id = ?'
             + ' ORDER BY id ASC';
       arr.push(id);
-    }
-    if (limit){
-      query += 'WHERE id'
-            + ' BETWEEN '+start
-            + ' AND '+(limit+start-1)
-            + ' ORDER BY id ASC';
+    } else if (limit){
+      query += 'WHERE id >= '+start
+            + ' LIMIT '+limit;
     }
     let ob = [];
-  	try {
+  	let res;
+    try {
       await dbc.beginTransaction();
-      const [res] = await dbc.execute(query, arr);
+      [res] = await dbc.execute(query, arr);
       if(!start){
         start = 1;
       }
@@ -124,23 +179,17 @@ class Peers {
             lastSeen: res[0].last_seen,
             lastScanned: res[0].last_scanned
           });
-          dbc.release();
-          return ob;
         } else {
           res.forEach((el)=>{
-            if(el.id >= start && el.id <= limit+start-1){
-              ob.push({
-                id: el.id,
-                address: el.address,
-                blocked: el.blocked,
-                discovered: el.first_seen,
-                lastSeen: el.last_seen,
-                lastScanned: el.last_scanned
-              });
-            }
+            ob.push({
+              id: el.id,
+              address: el.address,
+              blocked: el.blocked,
+              discovered: el.first_seen,
+              lastSeen: el.last_seen,
+              lastScanned: el.last_scanned
+            });
           });
-          dbc.release();
-          return ob;
         }
       } else {
         if(address){
@@ -152,8 +201,6 @@ class Peers {
         } else {
           ob.push({ error: 'Something went wrong. Report Exception 26 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=' });
         }
-        dbc.release();
-        return ob;
       }
     } catch(err){
       if(address){
@@ -168,6 +215,7 @@ class Peers {
       console.log('Errored');
       console.log(err);
       console.log(ob);
+    } finally {
       dbc.release();
       return ob;
     }
@@ -187,14 +235,14 @@ class Peers {
       await utils.asyncForEach(scan, async (row)=>{
         const version = await this.versions(row.versionId);
         const platform = await this.platforms(row.platformId);
-        ob.measurements.push([
-          row.timestamp,
-          row.result,
-          row.rtt,
-          row.blockHeight,
-          version[0].version,
-          platform[0].platform
-        ]);
+        ob.measurements.push({
+          timestamp: row.timestamp,
+          result: row.result,
+          rtt: row.rtt,
+          height: row.blockHeight,
+          version: version[0].version,
+          platform: platform[0].platform
+        });
       });
       return ob;
     } else {
@@ -351,7 +399,44 @@ class Peers {
     })
     return ob;
   }
+  // gets info from utils_crawler DB tables
+  async getInfo (peer){
+    const info = await this.allFrom('checks', peer.id, 'peer_id');
+    let ips = [];
+    await utils.asyncForEach(info, async (el)=>{
+      let ob = {
+        ip: el.ip,
+        hash: el.hash,
+        lastScanned: el.lastScanned
+      };
+      if(el.api !== 0){
+        ob.apiPort = el.api;
+      } else {
+        ob.apiPort = false;
+      }
+      switch(el.blocked){
+        case BLOCK_REASONS.NOT_BLOCKED:
+          ob.blocked = "Not Blocked";
+          break;
+        case BLOCK_REASONS.ILLEGAL_ADDRESS:
+          ob.blocked = 'Invalid IP';
+          break;
+        case BLOCK_REASONS.NEW_IP:
+          ob.blocked = 'IP expired';
+          break;
+      }
+      const ssl = await this.allFrom('ssl_checks', el.ssl_id, 'ssl_id');
+      ob.ssl = ssl[0].ssl;
+      ob.sslFrom = ssl[0].sslFrom;
+      ob.sslTo = ssl[0].sslTo;
 
+      const loc = await this.allFrom('loc_checks', info[0].loc_id, 'loc_id');
+      ob.country = loc[0].country,
+      ob.city = loc[0].city,
+      ips.push(ob)
+    });
+    return ips;
+  }
 }
 
 module.exports = Peers;

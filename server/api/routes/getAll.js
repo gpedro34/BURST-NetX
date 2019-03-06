@@ -2,9 +2,9 @@
 
 const db = require('./../db/mariadb');
 const utils = require('./../utils');
-const ssl = require('./../brs/ssl');
-const brs = require('./../brs/calls');
-const brsUtils = require('./../brs/utils');
+const ssl = require('./../lib/ssl');
+const brs = require('./../lib/calls');
+const brsUtils = require('./../lib/utils');
 const defaults = require('./../../../config/defaults');
 
 const control = require('./../db/controllers').cPeers;
@@ -48,15 +48,16 @@ exports.allFrom = async (req, res) => {
       obj = {
         peers: []
       }
-      // TODO: Make location data be stored in DB and be crawled every X amount of time
-      // Current way takes almost 40 seconds in average to get location of each peer
-
       await utils.asyncForEach(resp, async (el)=>{
         // Complete peer information
-        const comp = await control.completePeer(el);
+        let comp = await control.completePeer(el);
         // Resume Measurements
-        const resume = await utils.resumeMeasurements(comp);
-        obj.peers.push(resume);
+        if(defaults.webserver.useUtilsCrawler){
+          comp.info = await control.getInfo({id: comp.id});
+        } else {
+          comp.info = await ssl.checkNode(comp.address);
+        }
+        obj.peers.push(comp);
       });
     } else {
       obj = {

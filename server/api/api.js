@@ -122,8 +122,6 @@ app.get('/docs', (req, res) => {
 // API Routes
 const peersRoutes = require('./routes/peers');
   // Get all peers or peers by Platform, Version or Height
-  // POST
-  app.post('/api/peers', peersRoutes.peersPost);
   // REST GET
   app.get('/api/peers', (req, res)=>{
     if(req.query.requestType === 'getPeersById'){
@@ -206,8 +204,6 @@ const peersRoutes = require('./routes/peers');
   });
 const peerRoutes = require('./routes/peer');
   // Get peer by ID or address
-  // POST
-  app.post('/api/peer', peerRoutes.peerPost);
   // REST GET
   app.get('/api/peer', (req, res)=>{
     if(req.query.id){
