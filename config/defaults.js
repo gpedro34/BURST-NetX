@@ -23,6 +23,8 @@ exports.webserver = {
   "port": 5000,
   // default 25 - max amount of results provided through API getPeersById
   "limitPeersPerAPIcall": 25,
+  // Recommended use of utils-crawler (https://github.com/gpedro34/utils-crawler) so the API doesn't have to perform DNS, IP location, SSL checks and API public port for each peer in every API response (on demand).
+  "useUtilsCrawler": true,
   "searchEngine":{
     // getAll Queries
     "searchQueries": true,
@@ -33,7 +35,7 @@ exports.webserver = {
     getAll?from=peers&completePeers=true
     which returns all peers in DB
     with uptime, location, ssl and public API check */
-    "completePeers": false
+    "completePeers": true
   }
 };
 // Bundle Backend + Frontend Configurations

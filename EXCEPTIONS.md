@@ -8,4 +8,3 @@
 
 # GET /api/peers
 - Exception 30 -> peersGet
-- Exception 10 -> peersPost
