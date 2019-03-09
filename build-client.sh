@@ -1,0 +1,1 @@
+echo "Hope you didn't forgot to set env.DOMAIN_API" && echo "before running this script or you will be using fallback API" && echo "If react builder fails in CSS and JS files keep trying..." && rm -rf fe-build && cd client/src && rm -rf build && npm run build && mv ./../build ./../../fe-build
