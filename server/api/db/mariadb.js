@@ -425,12 +425,12 @@ class Peers {
           ob.blocked = 'IP expired';
           break;
       }
-      const ssl = await this.allFrom('ssl_checks', el.ssl_id, 'ssl_id');
+      const ssl = await this.allFrom('ssl_checks', el.sslId, 'ssl_id');
       ob.ssl = ssl[0].ssl;
       ob.sslFrom = ssl[0].sslFrom;
       ob.sslTo = ssl[0].sslTo;
 
-      const loc = await this.allFrom('loc_checks', info[0].loc_id, 'loc_id');
+      const loc = await this.allFrom('loc_checks', info[0].locId, 'loc_id');
       ob.country = loc[0].country,
       ob.city = loc[0].city,
       ips.push(ob)
