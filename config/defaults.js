@@ -2,11 +2,11 @@
 // Database Connection Configurations
 exports.mariaDB = {
   // MariaDB server connection configurations
-  "host": "localhost",          // default: 'localhost'
+  "host": "192.168.0.11",          // default: 'localhost'
   "port": 3306,                 // default: 3306
 	"name": "brs_crawler",        // default: 'brs_crawler'
 	"user": "netX",               // default: 'NetX'
-	"pass": "netX",               // default: 'NetX'
+	"pass": "BURSTAllianceNetX",               // default: 'NetX'
   "maxConnections": 10         // default: 10
 };
 // Backend Configurations
@@ -20,9 +20,9 @@ exports.webserver = {
     'http://localhost:5000'
   ],
   // default: 5000
-  "port": 5000,
+  "port": 80,
   // default 25 - max amount of results provided through API getPeersById
-  "limitPeersPerAPIcall": 25,
+  "limitPeersPerAPIcall": 50,
   // Recommended use of utils-crawler (https://github.com/gpedro34/utils-crawler) so the API doesn't have to perform DNS, IP location, SSL checks and API public port for each peer in every API response (on demand).
   "useUtilsCrawler": true,
   "searchEngine":{
