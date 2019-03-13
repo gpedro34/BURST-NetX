@@ -130,6 +130,8 @@ const completeGetPeers = (req, res, obj)=>{
     }
     if(def.webserver.useUtilsCrawler){
       comp.info = await control.getInfo({id: comp.id});
+    } else {
+      comp.info = await ssl.checkNode(brs.normalizeAPI(obj.address, true));
     }
     ob.peers.push(comp);
     if(ob.peers.length === obj.length){
