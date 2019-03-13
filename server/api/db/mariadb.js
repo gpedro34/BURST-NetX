@@ -252,9 +252,9 @@ class Peers {
 							ts = row.timestamp;
 						} else if(Math.abs(new Date(ts) - new Date(row.timestamp)) < 0){
 							const version = await this.versions(row.versionId);
-                                                        ob.version = version[0].version;
-                                                        const platform = await this.platforms(row.platformId);
-                                                        ob.platform = platform[0].platform;
+              ob.version = version[0].version;
+              const platform = await this.platforms(row.platformId);
+              ob.platform = platform[0].platform;
 							ob.lastHeight = row.blockHeight;
 							ts = row.timestamp;
 						}
@@ -262,6 +262,8 @@ class Peers {
 					if(row === scan[scan.length-1]){
 						if(successCount === 0 || totalCount === 0){
 							ob.weekUptime = 0;
+							ob.version = null;
+							ob.platform = null;
 						} else {
 							ob.weekUptime = successCount / totalCount * 100;
 						}
