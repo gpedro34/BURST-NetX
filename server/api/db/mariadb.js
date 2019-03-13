@@ -15,6 +15,15 @@ const SSL_CODES = {
   IP_MISMATCH: 3,
   EXPIRED: 4
 }
+const SCAN_RESULT = {
+	SUCCESS: 0,
+	UNKNOWN: 1,
+	TIMEOUT: 2,
+	REFUSED: 3,
+	REDIRECT: 4,
+	EMPTY_RESPONSE: 5,
+	INVALID_RESPONSE: 6,
+};
 
 class Peers {
   constructor(db) {
@@ -229,22 +238,37 @@ class Peers {
         id: peer.id,
         discovered: peer.discovered,
         lastSeen: peer.lastSeen,
-        lastScanned: peer.lastScanned,
-        measurements: []
+        lastScanned: peer.lastScanned
       }
-      await utils.asyncForEach(scan, async (row)=>{
-        const version = await this.versions(row.versionId);
-        const platform = await this.platforms(row.platformId);
-        ob.measurements.push({
-          timestamp: row.timestamp,
-          result: row.result,
-          rtt: row.rtt,
-          height: row.blockHeight,
-          version: version[0].version,
-          platform: platform[0].platform
-        });
+			let successCount = 0;
+			let totalCount = 0;
+			let ts;
+      scan.forEach(async (row) => {
+				if(new Date(row.timestamp) >= (Date.now() - (1000 * 60 * 60 * 24 * 7))){
+					totalCount++;
+					switch(row.result){
+						case 0:
+							successCount++;
+							break;
+					}
+					if(!ob.version || !ob.platform || !ob.lastHeight || !ts || new Date(ts) < new Date(row.timestamp)){
+						ob.version = await this.versions(row.versionId);
+						ob.version = ob.version.version;
+						ob.platform = await this.platforms(row.platformId);
+						ob.platform = ob.platform.platform;
+						ob.lastHeight = row.blockHeight;
+						ts = row.timestamp;
+					}
+				}
+				if(row === scan[scan.length-1]){
+					if(successCount === 0 || totalCount === 0){
+						ob.weekUptime = 0;
+					} else {
+						ob.weekUptime = successCount / totalCount * 100;
+					}
+				}
       });
-      return ob;
+			return ob;
     } else {
       if(peer.error){
         return peer;
