@@ -31,7 +31,7 @@ exports.peerGet = async (req, res) => {
     res.send(obj[0]);
   } else {
     // Complete peer information
-    obj = await control.completePeer(obj[0]);
+    obj = await control.completePeer(obj[0], req.query.uptimeTimetable);
     // SSL, location and wallet check
     let info;
     try{

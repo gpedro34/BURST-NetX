@@ -122,7 +122,7 @@ const completeGetPeers = (req, res, obj)=>{
   let ob = { peers:[] }
   obj.forEach(async (el) => {
     // Complete peer information
-    const comp = await control.completePeer(el);
+    const comp = await control.completePeer(el, req.query.uptimeTimetable);
     if(comp.error){
       // Send the error
       res.send(comp);

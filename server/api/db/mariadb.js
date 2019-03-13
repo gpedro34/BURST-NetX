@@ -221,7 +221,47 @@ class Peers {
     }
   }
   // Get peer scans
-  async completePeer(peer) {
+  async completePeer(peer, timetable) {
+		let text;
+		if(!timetable || (timetable.indexOf('-minutes') < 0 && timetable.indexOf('-hours') < 0 && timetable.indexOf('-days') < 0 && timetable.indexOf('-weeks') < 0 && timetable.indexOf('-months') < 0)) {
+			timetable = 1000 * 60 * 60 * 24 * 7;
+			text = '7-days';
+		} else if(timetable.indexOf('-minutes') > 0){
+			let minutes = Number(timetable.slice(0, timetable.indexOf('-minutes')));
+			if(typeof minutes !== 'number' || minutes < 0 || minutes > 365*24*60){
+				minutes = 60;
+			}
+			timetable = 1000 * 60 * minutes;
+			text = minutes+'-minutes';
+		} else if(timetable.indexOf('-hours') > 0){
+			let hours = Number(timetable.slice(0, timetable.indexOf('-hours')));
+			if(typeof hours !== 'number' || hours < 0 || hours > 365*24){
+				hours = 24;
+			}
+			timetable = 1000 * 60 * 60 * hours;
+			text = hours+'-hours';
+		} else if(timetable.indexOf('-days') > 0){
+			let days = Number(timetable.slice(0, timetable.indexOf('-days')));
+			if(typeof days !== 'number' || days < 0 || days > 365){
+				days = 7;
+			}
+			timetable = 1000 * 60 * 60 * 24 * days;
+			text = days+'-days';
+		} else if(timetable.indexOf('-weeks') > 0){
+		 let weeks = Number(timetable.slice(0, timetable.indexOf('-weeks')));
+		 if(typeof weeks !== 'number' || weeks < 0 || weeks > 53){
+			 weeks = 4;
+		 }
+		 timetable = 1000 * 60 * 60 * 24 * 7 * weeks;
+		 text = weeks+'-weeks';
+	 } else if(timetable.indexOf('-months') > 0){
+		 let months = Number(timetable.slice(0, timetable.indexOf('-months')));
+		 if(typeof months !== 'number' || months < 0 || months > 13){
+			 months = 6;
+		 }
+		 timetable = 1000 * 60 * 60 * 24 * 30 * months;
+		 text = months+'-months';
+	 }
     if(peer.id){
       const scan = await this.allFrom('scans', peer.id);
       let ob = {
@@ -229,14 +269,15 @@ class Peers {
         id: peer.id,
         discovered: peer.discovered,
         lastSeen: peer.lastSeen,
-        lastScanned: peer.lastScanned
+        lastScanned: peer.lastScanned,
+				uptimeInterval: text
       }
 			let successCount = 0;
 			let totalCount = 0;
 			let ts;
 			try{
 				await utils.asyncForEach(scan, async (row) => {
-					if(Math.abs(new Date(row.timestamp) - new Date()) <= 1000 * 60 * 60 * 24 * 7){
+					if(Math.abs(new Date(row.timestamp) - new Date()) <= timetable){
 						totalCount++;
 						switch(row.result){
 							case "Success":
@@ -261,11 +302,11 @@ class Peers {
 					}
 					if(row === scan[scan.length-1]){
 						if(successCount === 0 || totalCount === 0){
-							ob.weekUptime = 0;
+							ob.uptime = 0;
 							ob.version = null;
 							ob.platform = null;
 						} else {
-							ob.weekUptime = successCount / totalCount * 100;
+							ob.uptime = successCount / totalCount * 100;
 						}
 					}
 	      });
