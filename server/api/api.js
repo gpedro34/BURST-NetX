@@ -229,10 +229,10 @@ if(defaults.webserver.searchEngine.searchQueries === true){
     // Get all from asked table
     // REST GET
     app.get('/api/getAll', (req, res)=>{
-      if(req.query.from === 'platforms' || req.query.from === 'versions' || req.query.from === 'peers' || req.query.from === 'scans'){
+      if(req.query.from === 'platforms' || req.query.from === 'versions' || req.query.from === 'peers' || req.query.from === 'scans' || req.query.from === 'checks' || req.query.from === 'locations' || req.query.from === 'ssl'){
           getAllRoutes.allFrom(req, res);
       } else {
-        res.send({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers' or 'scans'" });
+        res.send({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers', 'scans', 'checks', 'locations' or 'ssl'" });
         return;
       }
     });

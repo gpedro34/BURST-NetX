@@ -29,6 +29,21 @@ exports.allFrom = async (req, res) => {
       prop = req.query.where;
       value = req.query.value;
       break;
+    case 'checks':
+      table = req.query.from;
+      prop = req.query.where;
+      value = req.query.value;
+      break;
+    case 'locations':
+      table = 'loc_checks';
+      prop = req.query.where;
+      value = req.query.value;
+      break;
+    case 'ssl':
+      table = 'ssl_checks';
+      prop = req.query.where;
+      value = req.query.value;
+      break;
   }
   if(req.query.order && (req.query.order === 'ASC' || req.query.order === 'DESC')){
     order = req.query.order;
@@ -68,8 +83,18 @@ exports.allFrom = async (req, res) => {
     obj = {
       scans: resp
     }
-  } else {
-
+  } else if(req.query.from === 'checks'){
+    obj = {
+      checks: resp
+    }
+  } else if(req.query.from === 'locations'){
+    obj = {
+      locations: resp
+    }
+  } else if(req.query.from === 'ssl'){
+    obj = {
+      ssl: resp
+    }
   }
   // Send the results
   res.send(obj);
