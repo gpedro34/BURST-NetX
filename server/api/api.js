@@ -131,7 +131,7 @@ const peersRoutes = require('./routes/peers');
       } else {
         req.params.start = 1;
       }
-      if(req.query.howMany && req.query.howMany > 1 && req.query.howMany <= defaults.webserver.limitPeersPerAPIcall){
+      if(req.query.howMany && req.query.howMany >= 1 && req.query.howMany <= defaults.webserver.limitPeersPerAPIcall){
         req.params.howMany = req.query.howMany;
       } else {
         req.params.howMany = defaults.webserver.limitPeersPerAPIcall;
