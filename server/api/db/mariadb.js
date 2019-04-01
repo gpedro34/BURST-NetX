@@ -284,18 +284,11 @@ class Peers {
 								successCount++;
 								break;
 						}
-						if(!ts){
+						if(!ts || (Math.abs(new Date(ts) - new Date(row.timestamp)) < 0)){
 							const version = await this.versions(row.versionId);
 							ob.version = version[0].version;
 							const platform = await this.platforms(row.platformId);
 							ob.platform = platform[0].platform;
-							ob.lastHeight = row.blockHeight;
-							ts = row.timestamp;
-						} else if(Math.abs(new Date(ts) - new Date(row.timestamp)) < 0){
-							const version = await this.versions(row.versionId);
-              ob.version = version[0].version;
-              const platform = await this.platforms(row.platformId);
-              ob.platform = platform[0].platform;
 							ob.lastHeight = row.blockHeight;
 							ts = row.timestamp;
 						}
@@ -497,9 +490,13 @@ class Peers {
       }
       const ssl = await this.allFrom('ssl_checks', el.sslId, 'ssl_id');
       ob.ssl = ssl[0].ssl;
-      ob.sslFrom = ssl[0].sslFrom;
-      ob.sslTo = ssl[0].sslTo;
-
+			if(ob.ssl === 'Invalid'){
+				ob.sslFrom = 'N/A';
+				ob.sslTo = 'N/A';
+			} else {
+				ob.sslFrom = ssl[0].sslFrom;
+	      ob.sslTo = ssl[0].sslTo;
+			}
       const loc = await this.allFrom('loc_checks', info[0].locId, 'loc_id');
       ob.country = loc[0].country,
       ob.city = loc[0].city,
