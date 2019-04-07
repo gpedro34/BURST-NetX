@@ -1,8 +1,9 @@
-# DONE:
+# Credits to:
 
-@gpedro34
-- Backend and API
-- Automation scripts
+* gpedro34
+  - Backend and API
+  - Automation scripts
+  - Frontend
 
-@shefass
-- React Front-End work
+* MrLogik
+  - WatchDog Logo

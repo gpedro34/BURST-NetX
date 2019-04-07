@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Distributed Network Explorer for the Burst Network" />
+  	<meta name="keywords" content="burst network watcher watchdog explorer crawler" />
+  	<meta name="author" content="gpedro@BurstAppsTeam" />
+    <title>Burst Network Explorer</title>
+    <!-- Favicons (created with http://realfavicongenerator.net/) -->
+      <link rel="apple-touch-icon" href="img/favicons/apple-touch-icon.png">
+      <link rel="icon" type="image/png" href="img/favicons/favicon-16x16.png">
+      <link rel="icon" type="image/png" href="img/favicons/favicon-32x32.png">
+      <link rel="manifest" href="img/favicons/manifest.json">
+      <link rel="shortcut icon" type="image/png" href="img/favicons/favicon.png">
+      <link rel="icon" type="image/png" href="img/favicons/favicon.png">
+      <link rel="icon" type="image/png" href="img/favicons/favicon.png">
+      <meta name="msapplication-config" content="img/favicons/browserconfig.xml">
+    <!-- /Favicons -->
+    <!-- CSS -->
+      <!-- Font Awesome -->
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+      <!-- Bootstrap -->
+    	<link rel="stylesheet" type="text/css" href="css/lib/bootstrap.css">
+      <!-- Topbar -->
+      <link href="css/topbar.css" rel="stylesheet" type="text/css" />
+      <!-- Loader -->
+      <link href="css/loader.css" rel="stylesheet" type="text/css" />
+      <!-- Footer -->
+      <link href="css/footer.css" rel="stylesheet" type="text/css" />
+      <!-- Page -->
+      <link href="css/index.css" rel="stylesheet" type="text/css" />
+    <!-- /CSS -->
+    <!-- JS -->
+      <!-- Configurations -->
+      <script src="configs.js" type="text/javascript"></script>
+      <!-- Constants -->
+      <script src="js/const.js" type="text/javascript"></script>
+      <!-- Countries Dictionary -->
+      <script type="text/javascript"  src="js/dictionary.js"></script>
+      <!-- Content loader -->
+      <script src="js/index.js" type="text/javascript"></script>
+      <!-- Search functions -->
+      <script src="js/search.js" type="text/javascript"></script>
+      <!-- GeoCharts -->
+      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript"  src="js/geochart.js"></script>
+    <!-- /JS -->
+  </head>
+  <body onLoad="start()" id="page-body" style="background-color: #B7C9E8;">
+    <div id="loader-div"><div id="loader"></div></div>
+    <div id="topbar" class="hide">
+      <div class="navbar-header">
+				<a class="navbar-brand" href="index.html"><img src="img/logo.png" data-active-url="img/logo-active.png" alt="" style="position: relative; left: -20px; width:180px; height: auto;"></a>
+			</div>
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right main-nav">
+					<input type="text" id="searchInput" onkeyup="lookForEnter()" placeholder="Search" title="Type a peer IP or Announced Address">
+				</ul>
+			</div>
+    </div>
+    <br><br>
+    <div id="init_div" class="hide">
+      <div id="regions_div" class="center"></div>
+      <br><br><br><br>
+      <i class="fa fa-angle-double-down pointer" style="font-size:40px; color: #7DA4E8;"></i>
+      <br>
+      <br>
+      <br>
+    </div>
+    <br><br><br><br>
+    <div id="content" class="hide">
+      <br><br><br><br><br>
+      <h2>Peers</h2>
+      <br><br>
+      <div id="data"></div>
+      <br>
+      <div id="page-div" class="hide">
+        <i id="previous" class="fa fa-arrow-circle-left hide point"  style="font-size: 35px; color: #7DA4E8;" onClick="getFromLastPrev()"></i>
+        <span id="page">1</span>
+        <i id="next" class="fa fa-arrow-circle-right point" style="font-size: 35px; color: #7DA4E8;" onClick="getFromLastNext()"></i>
+      </div>
+      <br><br><br>
+      <div class="hide" id="peers"></div>
+    </div>
+    <div id="footer" class="hide">
+      <ul class="footer-list" style="display:inline-table;">
+        <li class="footer-comp"><a href="index.html" id="github">Homepage</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="http://watchdog.burst-alliance.org/docs">API Documentation</a></li>
+      </ul>
+      <br>
+      <ul class="footer-list" style="display:inline-table;">
+        <li class="footer-comp"><a target="_blank" id="github" href="https://www.burst-coin.org">Burstcoin Homepage</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://explorer.burstcoin.network/">Burst Explorer</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://www.burstcoin.ist/">News</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://burstwiki.org/wiki/Main_Page">Wiki</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://burstforum.net/">Burst Forum</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://wallet.burst-alliance.org:8125/index.html">Online Wallet</a></li>
+        <li class="footer-comp"><a target="_blank" id="github" href="https://github.com/burst-apps-team/burstcoin/releases">Download Wallet</a></li>
+      </ul>
+      <br>
+      <span id="github">
+        <i class="far fa-copyright"></i>
+        <a target="_blank" id="github" href="https://github.com/gpedro34/BURST-NetX/">
+          gpedro34
+        </a>
+        @ Burst Apps Team 2019 -
+        <a target="_blank" id="github" href="https://github.com/burst-apps-team/">
+          <i class="fab icons-size fa-github"></i>
+        </a>
+        <a target="_blank" id="github" href="https://discord.gg/G8N2QPa">
+          <i class="fab icons-size fa-discord"></i>
+        </a>
+        <a target="_blank" id="github" href="https://www.reddit.com/r/burstcoin/new">
+          <i class="fab icons-size fa-reddit"></i>
+        </a>
+        <a target="_blank" id="github" href="https://t.me/burstcoin">
+          <i class="fab icons-size fa-telegram"></i>
+        </a>
+      </span>
+    </div>
+  </body>
+</html>

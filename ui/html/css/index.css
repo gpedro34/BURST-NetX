@@ -1,0 +1,84 @@
+/* Element changes */
+html, body{
+  margin: 0;
+}
+body{
+    text-align:center;
+}
+td{
+  border-radius: 5px;
+}
+tr {
+  text-align: left;
+  vertical-align: middle;
+}
+tr:nth-child(odd) {background-color: #e6e6e6;}
+tr:nth-child(even) {background-color: #ffffff;}
+tr:hover {background-color: #7DA4E8;}
+a{
+  text-decoration: none;
+}
+
+/* IDs */
+/* front-window div */
+#init_div{
+  background-color:#B7C9E8;
+  position: relative;
+  width: 100%;
+  height: 980px;
+  display: inline-block;
+  display: -moz-inline-stack; /* for firefox 2 */
+  *display: inline; /* for ie 6 and 7 */
+}
+/* countries graph */
+#regions_div{
+  position: relative;
+  padding-bottom: 30px;
+  top: 80px;
+}
+/* div to include data div, page number and peers count */
+#content{
+  background-color:#ffffff;
+  top: 60px;
+  width: 100%;
+}
+/* data div container */
+#data{
+    position: relative;
+    align: center;
+}
+/* page div */
+#page{
+    font-size: 27px;
+    position: relative;
+    top: -3px;
+}
+
+
+/* Classes */
+.hide{
+  visibility: hidden;
+}
+.link:hover{
+  color: #ffffff;
+}
+.point{
+  cursor: pointer;
+}
+.table {
+  background-color: #ffffff;
+  width: auto;
+  table-layout: auto;
+  border-spacing: 5px;
+  border-radius: 5px;
+}
+.thead{
+  background-color: #7DA4E8;
+  border-radius: 5px;
+  text-align: center;
+  vertical-align: middle;
+}
+.center{
+  margin-left:auto;
+  margin-right:auto;
+}
