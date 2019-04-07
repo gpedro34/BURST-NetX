@@ -65,17 +65,23 @@ NOTE: Serves Frontend from 'fe-build' folder
 * BUNDLE_MODE - String
   * if set to PROD will try to serve builded react from 'fe-build' folder, if the folder does not exist this setting will be over-written during code execution
   * Default: 'PROD'
+* SSL - Boolean
+  * if set to false will disable SSL.
+  * Default: true
+* SSL_PORT - Number
+  * Port to use for HTTPS webserver.
+  * Default: 443
 * DOMAIN_API - String
   * Domain to use for frontend to use for API calls to backend
   * Default: 'http://watchdog.burst-alliance.org/'
   * Set this before building React source code
 * DOMAIN_FE - String
-  * Domain origin of frontend. If set will automatically be CORS whitelisted
+  * Domain origin of dev frontend. If set will automatically be CORS whitelisted
   * Optional  
   NOTE: Use this option if your deployment API isn't public and you want to serve your frontend anyway
 * CORS_MODE - String
-  * if set to OPEN will accept all API calls
-  * if set to DEV will accept undefined origin API calls
+  * if set to 'OPEN' will accept all API calls
+  * if set to 'DEV' will accept undefined origin API calls
   * Default: DEV  
   NOTE: CORS Whitelisted addresses will always be accepted independently of this mode.
 * CORS_WHITELIST - Array
@@ -137,5 +143,5 @@ NOTE: Serves Frontend from 'fe-build' folder
   * Request headers to include in logging
 * LOG_RES_HEAD - Array of Strings
   * Response headers to include in logging  
-    
+
   [For more information on logging rotation](https://www.npmjs.com/package/rotating-file-stream)
