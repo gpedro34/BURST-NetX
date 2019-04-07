@@ -62,7 +62,11 @@ app.use(morgan(logger.mode, {
   skip: (req, res) => {
     return  req._parsedUrl.path.indexOf('static') != -1 ||
             req._parsedUrl.path.indexOf('manifest') != -1 ||
-            req._parsedUrl.path.indexOf('favicon') != -1
+            req._parsedUrl.path.indexOf('favicon') != -1 ||
+            req._parsedUrl.path.indexOf('/css/') != -1 ||
+            req._parsedUrl.path.indexOf('/js/') != -1 ||
+            req._parsedUrl.path.indexOf('/img/') != -1 ||
+            req._parsedUrl.path.indexOf('configs') != -1
     // Add future exceptions in here
   }
 }));
@@ -101,22 +105,25 @@ if(logger.log){
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
-// If in Bundle mode will serve frontend on domain root path
-let bundleMode = process.env.BUNDLE_MODE || defaults.bundle.mode;
-try{
-  const checkBuild = require('./../../fe-build/manifest.json');
-  bundleMode = 'PROD';
-} catch {
-  bundleMode = '';
-}
-if(bundleMode === 'PROD'){
-  // Frontend served at http://localhost:5000/
-  app.get('/', app.use(express.static('fe-build')));
-}
+// SSL
+app.use((req, res, next)=>{
+  if(req.protocol === 'http' && (process.env.SSL || defaults.bundle.ssl)){
+    if(req.headers.host.indexOf(':') >= 0){
+      req.headers.host = req.headers.host.slice(0, req.headers.host.indexOf(':'));
+    }
+    res.redirect(301, `https://${req.headers.host}:${require('./../../config/defaults').bundle.sslPort}${req.url}`);
+    return;
+  } else {
+    next();
+  }
+})
+
+// Frontend served at http://domain:port/
+app.get('/', app.use(express.static('ui/html')));
 
 // APi Docs at http://localhost:5000/docs
 app.get('/docs', (req, res) => {
-    res.redirect('https://documenter.getpostman.com/view/4955736/RztoNUU6');
+    res.redirect(301, 'https://documenter.getpostman.com/view/4955736/RztoNUU6');
 });
 
 // API Routes

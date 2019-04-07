@@ -20,7 +20,7 @@ exports.webserver = {
     'http://localhost:5000'
   ],
   // default: 5000
-  "port": 5000,
+  "port": 80,
   // default 25 - max amount of results provided through API getPeersById
   "limitPeersPerAPIcall": 25,
   // Recommended use of utils-crawler (https://github.com/gpedro34/utils-crawler) so the API doesn't have to perform DNS, IP location, SSL checks and API public port for each peer in every API response (on demand).
@@ -35,15 +35,16 @@ exports.webserver = {
     getAll?from=peers&completePeers=true
     which returns all peers in DB
     with uptime, location, ssl and public API check */
-    "completePeers": true
+    "completePeers": false
   }
 };
 // Bundle Backend + Frontend Configurations
 exports.bundle = {
-  // Default: "DEV" - will not load frontend as it has no build yet
-  // Can also be "PROD" - will have frontend at domain root
-  //                      served as static code from 'fe-build' folder
-  "mode": "PROD"
+  // SSL active by default on port 443
+  /* Need to put the 'certificate.crt', 'ca_bundle.crt' and
+   'private.key' inside '~/BURST-NetX/server/ssl/' folder */
+  "ssl": false,
+  "sslPort": 443
 };
 // BRS related Configurations
 exports.brs = {
@@ -72,6 +73,8 @@ exports.logger = {
   // Information to include in the logger to file.
   // You should refer to https://www.npmjs.com/package/morgan (tokens usage)
   "info": [
+    ":remote-addr",         // IP address
+    ":remote-user",         // User logged with Basic Auth
     ":date[web]",           // Date (clf, iso, web formats)
     ":method",              // Req Method
     ":url",                 // URL queried
