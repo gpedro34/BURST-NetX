@@ -7,7 +7,7 @@ let ready = false;
 // PAGES ACTIONS
 // Start API calls to Watchdog API to get data for world map
 function start(){
-  get(1);
+  get(1, true);
   var xhr = new XMLHttpRequest();
   xhr.open("GET", apiDomain+"getAll?from=checks&where=blocked&value=0", true);
   xhr.onload = function (e) {
@@ -255,7 +255,7 @@ function get(start, op){
            document.getElementById("footer").classList.remove("hide");
            clearInterval(int);
           }
-        }, 500)
+        }, 10)
       } else {
         console.error(xhr.statusText);
       }

@@ -1,11 +1,11 @@
 #footer{
   background-color: #8c8c8c;
   position: relative;
-  min-height: 180px;
-  width: 100%;
+  min-height: 250px;
+  width: inherit;
   bottom: 0px;
   left: 0px;
-  padding-top: 30px;
+  padding-top: 70px;
   text-align:center;
 }
 #github{
@@ -13,22 +13,17 @@
   font-weight: bold;
 }
 .footer-list{
-  position:relative;
-  margin-left:auto;
-  margin-right:auto;
-  margin-top:auto;
-  margin-bottom:15px;
-  list-style-type: none;
-  overflow: hidden;
+  display:contents;
+  position: relative;
+  display: inline-block;
   text-align: center;
 }
-.footer-comp{
-  display:inline;
-  float: left;
+.footer-comp {
+  display:inline-block;
   text-align: center;
   padding-left: 50px;
   padding-right: 50px;
-  padding-bottom: 20px;
+  padding-bottom: 35px;
 }
 .icons-size{
   font-size: 20px;
