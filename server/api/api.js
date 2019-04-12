@@ -152,17 +152,17 @@ const peersRoutes = require('./routes/peers');
           if(Number.isInteger(req.query.id)){
             req.params.id = req.query.id;
           } else {
-            res.send({ "error": "'id' must be an integer" });
+            res.json({ "error": "'id' must be an integer" });
             return;
           }
         } else {
-          res.send({ "error": "'id' must be a valid number" });
+          res.json({ "error": "'id' must be a valid number" });
           return;
         }
       } else if(req.query.platform){
         req.params.platform = req.query.platform;
       } else {
-        res.send({ "error": "You need to specify either a 'platform' or 'id' in your query" });
+        res.json({ "error": "You need to specify either a 'platform' or 'id' in your query" });
         return;
       }
     } else if(req.query.requestType === 'getPeersByVersion'){
@@ -174,17 +174,17 @@ const peersRoutes = require('./routes/peers');
           if(Number.isInteger(req.query.id)){
             req.params.id = req.query.id;
           } else {
-            res.send({ "error": "'id' must be an integer" });
+            res.json({ "error": "'id' must be an integer" });
             return;
           }
         } else {
-          res.send({ "error": "'id' must be a valid number" });
+          res.json({ "error": "'id' must be a valid number" });
           return;
         }
       } else if(req.query.version){
         req.params.version = req.query.version;
       } else {
-        res.send({ "error": "You need to specify either a 'version' or 'id' in your query" });
+        res.json({ "error": "You need to specify either a 'version' or 'id' in your query" });
         return;
       }
     } else if(req.query.requestType === 'getPeersByHeight'){
@@ -195,15 +195,15 @@ const peersRoutes = require('./routes/peers');
           if(Number.isInteger(req.query.height)){
             req.params.height = req.query.height;
           } else {
-            res.send({ "error": "'height' must be an integer" });
+            res.json({ "error": "'height' must be an integer" });
             return;
           }
         } else {
-          res.send({ "error": "'height' must be a number" });
+          res.json({ "error": "'height' must be a number" });
           return;
         }
       } else {
-        res.send({ "error": "You need to specify a starting 'height' in your query" });
+        res.json({ "error": "You need to specify a starting 'height' in your query" });
         return;
       }
     }
@@ -219,14 +219,14 @@ const peerRoutes = require('./routes/peer');
         req.params.id = req.query.id;
         peerRoutes.peerGet(req, res);
       } else {
-        res.send({ "error": "'id' must be a valid integer" });
+        res.json({ "error": "'id' must be a valid integer" });
         return;
       }
     } else if(req.query.address){
       req.params.address = String(req.query.address);
       peerRoutes.peerGet(req, res);
     } else {
-      res.send({ "error": "You must specify a valid 'id' or 'address' in your query" });
+      res.json({ "error": "You must specify a valid 'id' or 'address' in your query" });
       return;
     }
   });
@@ -239,7 +239,7 @@ if(defaults.webserver.searchEngine.searchQueries === true){
       if(req.query.from === 'platforms' || req.query.from === 'versions' || req.query.from === 'peers' || req.query.from === 'scans' || req.query.from === 'checks' || req.query.from === 'locations' || req.query.from === 'ssl'){
           getAllRoutes.allFrom(req, res);
       } else {
-        res.send({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers', 'scans', 'checks', 'locations' or 'ssl'" });
+        res.json({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers', 'scans', 'checks', 'locations' or 'ssl'" });
         return;
       }
     });

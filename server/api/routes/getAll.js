@@ -97,6 +97,6 @@ exports.allFrom = async (req, res) => {
     }
   }
   // Send the results
-  res.send(obj);
+  res.json(obj);
   return;
 }

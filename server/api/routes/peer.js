@@ -23,12 +23,12 @@ exports.peerGet = async (req, res) => {
       "error": "You must specify an 'id' or 'address' in your query"
     }
     // Send the error
-    res.send(obj);
+    res.json(obj);
     return ;
   }
   if(obj[0].error){
     // Send the results
-    res.send(obj[0]);
+    res.json(obj[0]);
   } else {
     // Complete peer information
     obj = await control.completePeer(obj[0], req.query.uptimeTimetable);
@@ -45,7 +45,7 @@ exports.peerGet = async (req, res) => {
     } finally {
       obj.info = info;
       // Send the results
-      res.send(obj);
+      res.json(obj);
     }
   }
 }

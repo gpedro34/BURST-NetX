@@ -125,7 +125,7 @@ const completeGetPeers = (req, res, obj)=>{
     const comp = await control.completePeer(el, req.query.uptimeTimetable);
     if(comp.error){
       // Send the error
-      res.send(comp);
+      res.json(comp);
       return comp;
     }
     if(def.webserver.useUtilsCrawler){
@@ -137,7 +137,7 @@ const completeGetPeers = (req, res, obj)=>{
     if(ob.peers.length === obj.length){
       // Send the results
       ob.peers.sort((a,b)=>{return a.id-b.id});
-      res.send(ob);
+      res.json(ob);
       return ob;
     }
   });
@@ -192,13 +192,13 @@ exports.peersGet = async (req, res) => {
     if(obj){
       if(obj.error){
         // Send the error
-        res.send(obj);
+        res.json(obj);
         return;
       } else if(req.params.requestType === 'getPeersById'){
         await completeGetPeers(req, res, obj.peers);
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls
-        res.send(obj);
+        res.json(obj);
         return;
       }
     } else {
@@ -208,12 +208,12 @@ exports.peersGet = async (req, res) => {
         params: req.params
       };
       console.error(err);
-      res.send(err);
+      res.json(err);
       return;
     }
   } else {
     // Send the error as JSON
-    res.send({error: 'Not a valid API call'});
+    res.json({error: 'Not a valid API call'});
     return;
   }
 }
