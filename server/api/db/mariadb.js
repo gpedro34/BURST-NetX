@@ -498,9 +498,13 @@ class Peers {
 	      ob.sslTo = ssl[0].sslTo;
 			}
       const loc = await this.allFrom('loc_checks', info[0].locId, 'loc_id');
-      ob.country = loc[0].country,
-      ob.city = loc[0].city,
-      ips.push(ob)
+			try{
+        ob.country = loc[0].country,
+        ob.city = loc[0].city,
+        ips.push(ob)
+      } catch(err) {
+        console.log("ERROR: LOCATION MISSING!!! => "+info[0].locId);
+      }
     });
     return ips;
   }
