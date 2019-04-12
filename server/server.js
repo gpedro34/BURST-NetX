@@ -7,6 +7,7 @@ const control = require('./api/db/controllers');
 
 // Start the server
 const port = process.env.PORT || require('./../config/defaults').webserver.port || 5000;
+let httpsServer;
 const server = app.listen(port, () => {
   console.log('HTTP server is listening on port '+port);
   // SSL
@@ -19,7 +20,7 @@ const server = app.listen(port, () => {
         ca: fs.readFileSync('./server/ssl/ca_bundle.crt'),
         key: fs.readFileSync('./server/ssl/private.key')
       }
-      const httpsServer = https.createServer(httpsOptions, app).listen(require('./../config/defaults').bundle.sslPort);
+      httpsServer = https.createServer(httpsOptions, app).listen(require('./../config/defaults').bundle.sslPort);
       console.log('HTTPS Server is listening on port '+require('./../config/defaults').bundle.sslPort);
       console.log(`Redirecting all requests from HTTP(${port}) to HTTPS(${require('./../config/defaults').bundle.sslPort})`);
     } else {
