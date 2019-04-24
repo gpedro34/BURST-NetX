@@ -5,57 +5,51 @@ exports.mariaDB = {
   "host": "localhost",          // default: 'localhost'
   "port": 3306,                 // default: 3306
 	"name": "brs_crawler",        // default: 'brs_crawler'
-	"user": "netX",               // default: 'NetX'
-	"pass": "netX",               // default: 'NetX'
+	"user": "NetX",               // default: 'NetX'
+	"pass": "NetX",               // default: 'NetX'
   "maxConnections": 10         // default: 10
 };
 // Backend Configurations
 exports.webserver = {
-  // default: "DEV"     -> will whitelist undefined origins
-  // can also be "OPEN" -> will turn API public (accept all origins)
-  // leave "" if you just want CORS to be open to whitelisted domains only
-  "mode": "DEV",
+  // default: "DEV"     -> will whitelist undefined origins (undefined origins like some mobile browsers send will be accepted)
+  // can also be "OPEN" -> will turn API public (accept all origins including undefined ones)
+  // can also be "CLOSED" if you just want CORS to be open to whitelisted domains only (undefined origins will be blocked)
+  "modeCORS": "DEV",
   // add allowed CORS origins
   "whitelistCORS": [
     'http://localhost:5000'
   ],
-  // default: 5000
+  // default: 80
   "port": 80,
-  // default 25 - max amount of results provided through API getPeersById
-  "limitPeersPerAPIcall": 25,
-  // Recommended use of utils-crawler (https://github.com/gpedro34/utils-crawler) so the API doesn't have to perform DNS, IP location, SSL checks and API public port for each peer in every API response (on demand).
-  "useUtilsCrawler": true,
+  // SSL active by default on port 443
+  /* Need to put the 'certificate.crt', 'ca_bundle.crt' and
+   'private.key' inside '~/BURST-NetX/server/ssl/' folder */
+  "ssl": false,
+  "sslPort": 443,
+  // frontendPath can be false if not to serve a frontend
+  "frontendPath": "ui/html",
+  // serveAPIDocs can be false if not to redirect to documentation page
+  "serveAPIDocsAt": "/docs",
+  "documentationURL": "https://documenter.getpostman.com/view/4955736/RztoNUU6",
+  // default 10 - max amount of results provided through API getPeersById
+  "limitPeersPerAPIcall": 10,
   "searchEngine":{
     // getAll Queries
     "searchQueries": true,
     /* Experimental mode
     Ok to run locally - Disabled by default
     Beaware that you will be performing a lot of calculations
-    Running locally I've an avg of 90 seconds to respond to
-    getAll?from=peers&completePeers=true
-    which returns all peers in DB
-    with uptime, location, ssl and public API check */
-    "completePeers": false
+    Were seen averages of 90 seconds to respond to
+    getAll?from=peers&where=blocked&value=0&completePeers=true
+    which returns all unblocked peers in DB
+    with 7-days uptime, location, ssl and public API checks information */
+    "completePeers": false,
+    "authorizedAPIKeys": [
+      "GENERATE_AND_INSERT_AN_AUTHORIZED_API_KEY_IN_HERE"
+    ]
   }
 };
-// Bundle Backend + Frontend Configurations
-exports.bundle = {
-  // SSL active by default on port 443
-  /* Need to put the 'certificate.crt', 'ca_bundle.crt' and
-   'private.key' inside '~/BURST-NetX/server/ssl/' folder */
-  "ssl": false,
-  "sslPort": 443
-};
-// BRS related Configurations
-exports.brs = {
-  // Default 10 sec - Timeout of API calls to BRS
-  "timeout": 10000,
-  // userAgent for BRS API calls
-  // Can be used to test how different wallets talk to each other
-  "userAgent": 'BRS/9.9.9',
-  "peerPort": 8123,   // Default peer port (default 8123)
-  "apiPort": 8125     // Default api port (default 8125)
-}
+
 // Logging Configurations
 exports.logger = {
   // Console logging
@@ -93,4 +87,15 @@ exports.logger = {
   "resHeaders":[
 
   ]
+}
+
+// BRS related Configurations
+exports.brs = {
+  // Default 10 sec - Timeout of API calls to BRS
+  "timeout": 10000,
+  // userAgent for BRS API calls
+  // Can be used to test how different wallets talk to each other
+  "userAgent": 'BRS/9.9.9',
+  "peerPort": 8123,   // Default peer port (default 8123)
+  "apiPort": 8125     // Default api port (default 8125)
 }
