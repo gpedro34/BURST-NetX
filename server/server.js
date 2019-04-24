@@ -4,45 +4,52 @@ const exit = require('exit');
 
 const app = require('./api/api');
 const control = require('./api/db/controllers');
+const def = require('./../config/defaults');
 
-// Start the server
-const port = process.env.PORT || require('./../config/defaults').webserver.port || 5000;
+// Start the webservers
+const port = process.env.PORT || def.webserver.port || 5000;
 let httpsServer;
 const server = app.listen(port, () => {
   console.log('HTTP server is listening on port '+port);
-  // SSL
-  if(require('./../config/defaults').bundle.ssl){
+  // HTTPS webserver
+  if(def.webserver.ssl){
     const fs = require('fs');
     const https = require('https');
+    // Check for certificates and key
     if(fs.existsSync('./server/ssl/certificate.crt') && fs.existsSync('./server/ssl/ca_bundle.crt') && fs.existsSync('./server/ssl/private.key')){
+      // Load files
       const httpsOptions = {
         cert: fs.readFileSync('./server/ssl/certificate.crt'),
         ca: fs.readFileSync('./server/ssl/ca_bundle.crt'),
         key: fs.readFileSync('./server/ssl/private.key')
       }
-      httpsServer = https.createServer(httpsOptions, app).listen(require('./../config/defaults').bundle.sslPort);
-      console.log('HTTPS Server is listening on port '+require('./../config/defaults').bundle.sslPort);
-      console.log(`Redirecting all requests from HTTP(${port}) to HTTPS(${require('./../config/defaults').bundle.sslPort})`);
+      // Start HTTPS webserver
+      httpsServer = https.createServer(httpsOptions, app).listen(def.webserver.sslPort);
+      console.log('HTTPS Server is listening on port '+def.webserver.sslPort);
+      console.log(`Redirecting all requests from HTTP(${port}) to HTTPS(${def.webserver.sslPort})`);
     } else {
+      // No SSL files in ./server/ssl
+      /* Files needed in ./server/ssl/ folder:
+          - certificate.crt
+          - ca_bundle.crt
+          - private.key
+      */
       console.error('Something went wrong with the SSL files');
     }
   }
 });
 
-process.on('SIGINT', () => {
-	console.log(`Shutting down webservers...`);
+// Close program
+const killAll = () => {
+  console.log(`Shutting down webservers...`);
+  // Close HTTP webserver
   server.close();
+  // If there is a HTTPS webserver, kill it
   if(httpsServer){
     httpsServer.close();
   }
+  // End of program
   exit(0);
-});
-
-process.on('SIGTERM', () => {
-	console.log(`Shutting down webservers...`);
-  server.close();
-  if(httpsServer){
-    httpsServer.close();
-  }
-	exit(0);
-});
+}
+process.on('SIGINT', killAll);
+process.on('SIGTERM', killAll);
