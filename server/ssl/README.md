@@ -1,1 +1,4 @@
-### SSL certificates and private.key files go into 'BURST-NetX/server/ssl/' folder
+### Files to include:
+- ca_bundle.crt
+- certificate.crt
+- private.key
