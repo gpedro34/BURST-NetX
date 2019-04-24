@@ -2,9 +2,6 @@
 
 const db = require('./../db/mariadb');
 const utils = require('./../utils');
-const ssl = require('./../lib/ssl');
-const brs = require('./../lib/calls');
-const brsUtils = require('./../lib/utils');
 const def = require('./../../../config/defaults');
 
 const control = require('./../db/controllers').cPeers;
@@ -35,11 +32,7 @@ exports.peerGet = async (req, res) => {
     // SSL, location and wallet check
     let info;
     try{
-      if(!def.webserver.useUtilsCrawler){
-        info = await ssl.checkNode(brs.normalizeAPI(obj.address, true));
-      } else {
-        info = await control.getInfo(obj);
-      }
+      info = await control.getInfo(obj);
     } catch(err){
       console.log(err);
     } finally {

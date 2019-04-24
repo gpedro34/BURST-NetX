@@ -3,7 +3,6 @@
 const fs = require('fs');
 
 const config = require('./../../config/defaults');
-const self = require('./utils');
 
 // util to read DB password locally stored (optional)
 exports.readFileTrim = (file) => {

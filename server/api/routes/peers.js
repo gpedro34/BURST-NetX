@@ -2,9 +2,6 @@
 
 const control = require('./../db/controllers').cPeers;
 const utils = require('./../utils');
-const brs = require('./../lib/calls');
-const ssl = require('./../lib/ssl');
-const limitPeers = require('./../../../config/defaults').webserver.limitPeersPerAPIcall;
 const def = require('./../../../config/defaults');
 
 // Validates information from API request and fires function to get peers from DB
@@ -13,15 +10,15 @@ const peers = async (firstIndex, amount) => {
   if(typeof firstIndex !== 'number' || firstIndex < 1){
     firstIndex = 1;
   }
-  // Validates amount (default 25 peers)
+  // Validates amount (default 10 peers)
   if(typeof amount === 'number'){
-    if(amount > limitPeers){
-      amount = limitPeers;
+    if(amount > def.webserver.limitPeersPerAPIcall){
+      amount = def.webserver.limitPeersPerAPIcall;
     } else if(amount < 1){
-      amount = limitPeers;
+      amount = def.webserver.limitPeersPerAPIcall;
     }
   } else {
-    amount = limitPeers;
+    amount = def.webserver.limitPeersPerAPIcall;
   }
   // get peers from DB
   let peers = await control.peers(null, null, amount, firstIndex);
@@ -128,11 +125,7 @@ const completeGetPeers = (req, res, obj)=>{
       res.json(comp);
       return comp;
     }
-    if(def.webserver.useUtilsCrawler){
-      comp.info = await control.getInfo({id: comp.id});
-    } else {
-      comp.info = await ssl.checkNode(brs.normalizeAPI(obj.address, true));
-    }
+    comp.info = await control.getInfo({id: comp.id});
     ob.peers.push(comp);
     if(ob.peers.length === obj.length){
       // Send the results
@@ -184,7 +177,7 @@ exports.peersGet = async (req, res) => {
         break;
       case 'getPeersById':
         if(!req.params.howMany){
-          req.params.howMany = limitPeers;
+          req.params.howMany = def.webserver.limitPeersPerAPIcall;
         }
         obj.peers = await peers(Number(req.params.start), Number(req.params.howMany));
         break;
@@ -194,8 +187,12 @@ exports.peersGet = async (req, res) => {
         // Send the error
         res.json(obj);
         return;
-      } else if(req.params.requestType === 'getPeersById'){
-        await completeGetPeers(req, res, obj.peers);
+      } else if(req.params.requestType === 'getPeersById' && default.webserver.searchEngine.completePeers){
+        if(process.env.authorizedAPIKeys.indexOf(req.params.apiKey) >= 0 || default.webserver.searchEngine.authorizedAPIKeys.indexOf(req.params.apiKey) >= 0){
+          obj = await completeGetPeers(req, res, obj.peers);
+          res.json(obj);
+          return;
+        }
       } else {
         // for peersbyPlatform, peersByVersion, peersByHeight API calls
         res.json(obj);
@@ -203,17 +200,17 @@ exports.peersGet = async (req, res) => {
       }
     } else {
       // Send the error as JSON and log it
-      const err = {
-        error: 'Something went wrong with DB call - Report Exception 30 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=',
-        params: req.params
-      };
-      console.error(err);
+      const err.error: 'Something went wrong with DB call - Report Exception 30 at https://github.com/gpedro34/BURST-NetX/issues/new?assignees=&labels=&template=bug_report.md&title=';
       res.json(err);
+      err.req = req;
+      console.error(err);
       return;
     }
   } else {
     // Send the error as JSON
     res.json({error: 'Not a valid API call'});
+    err.req = req;
+    console.error(err);
     return;
   }
 }

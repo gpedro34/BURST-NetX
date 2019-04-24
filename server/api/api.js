@@ -1,15 +1,14 @@
 'use strict';
 
-// API
+// Load defaults
+const defaults = require('./../../config/defaults');
+
+// Start Express App
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
-
-const bodyParser = require('body-parser');
 
 // CORS
 var cors = require('cors');
-const defaults = require('./../../config/defaults');
 // CORS Whitelists
 let allowedOrigins = defaults.webserver.whitelistCORS;
 if(process.env.CORS_WHITELIST){
@@ -23,18 +22,17 @@ if(process.env.CORS_WHITELIST){
 // CORS SETUP
 const corsOptions = {
   origin: function(origin, callback){
-    if(defaults.webserver.mode === 'OPEN' || process.env.CORS_MODE === 'OPEN'){
+    if(defaults.webserver.modeCORS === 'OPEN' || process.env.CORS_MODE === 'OPEN'){
       // Public API - Allow all origins
       return callback(null, true);
-    } else if(defaults.webserver.mode === "DEV" || process.env.CORS_MODE === 'DEV'){
+    } else if(defaults.webserver.modeCORS === "DEV" || process.env.CORS_MODE === 'DEV'){
       // Allows mobile and Postman calls
       if (origin === undefined){
         return callback(null, true);
       }
-    } else if(allowedOrigins.indexOf(origin) === -1){
+    } else if(defaults.webserver.modeCORS === "CLOSED" || process.env.CORS_MODE === 'CLOSED' && origin && allowedOrigins.indexOf(origin) === -1){
       // Block Request
-      var msg = 'The CORS policy for this site does not ' +
-                'allow access from the specified Origin.';
+      var msg = "CORS policy for this site doesn't allow access from the specified Origin";
       return callback(new Error(msg), false);
     }
     // allow requests with no origin
@@ -46,6 +44,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 // Logs to console
+const morgan = require('morgan');
 const logger = defaults.logger;
 logger.mode = process.env.LOG_MODE || logger.mode;
 logger.log = process.env.LOG || logger.log;
@@ -60,6 +59,7 @@ logger.reqHeaders = process.env.LOG_REQ_HEAD || logger.reqHeaders;
 logger.resHeaders = process.env.LOG_RES_HEAD || logger.resHeaders;
 app.use(morgan(logger.mode, {
   skip: (req, res) => {
+    // Exceptions (not to log!)
     return  req._parsedUrl.path.indexOf('static') != -1 ||
             req._parsedUrl.path.indexOf('manifest') != -1 ||
             req._parsedUrl.path.indexOf('favicon') != -1 ||
@@ -67,7 +67,6 @@ app.use(morgan(logger.mode, {
             req._parsedUrl.path.indexOf('/js/') != -1 ||
             req._parsedUrl.path.indexOf('/img/') != -1 ||
             req._parsedUrl.path.indexOf('configs') != -1
-    // Add future exceptions in here
   }
 }));
 // Logs to file
@@ -102,154 +101,163 @@ if(logger.log){
 }
 
 // Parsers for incoming data
-app.use(bodyParser.urlencoded({ extended: false }))
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// SSL
+// HTTPS redirection if SSL is enabled in configuration (env.SSL  || defaults.webserver.ssl)
 app.use((req, res, next)=>{
-  if(req.protocol === 'http' && (process.env.SSL || defaults.bundle.ssl)){
+  // If ssl mode is enabled...
+  if(req.protocol === 'http' && (process.env.SSL || defaults.webserver.ssl)){
     if(req.headers.host.indexOf(':') >= 0){
       req.headers.host = req.headers.host.slice(0, req.headers.host.indexOf(':'));
     }
-    res.redirect(301, `https://${req.headers.host}:${require('./../../config/defaults').bundle.sslPort}${req.url}`);
+    // redirect to HTTPS
+    res.redirect(301, `https://${req.headers.host}:${require('./../../config/defaults').webserver.sslPort}${req.url}`);
     return;
   } else {
     next();
   }
-})
-
-// Frontend served at http://domain:port/
-app.get('/', app.use(express.static('ui/html')));
-
-// APi Docs at http://localhost:5000/docs
-app.get('/docs', (req, res) => {
-    res.redirect(301, 'https://documenter.getpostman.com/view/4955736/RztoNUU6');
 });
 
+// Frontend served at http://domain:port/
+if(defaults.webserver.frontendPath){
+  app.get('/', app.use(express.static(defaults.webserver.frontendPath)));
+}
+
+// APi Docs at http://localhost:5000/docs
+if(defaults.webserver.serveAPIDocsAt){
+  app.get(defaults.webserver.serveAPIDocsAt, (req, res) => {
+    res.redirect(301, defaults.webserver.documentationURL);
+});
+}
+
 // API Routes
+// Get multiple peers by ID (paginated) or all of them by Platform, Version or Height
 const peersRoutes = require('./routes/peers');
-  // Get all peers or peers by Platform, Version or Height
-  // REST GET
-  app.get('/api/peers', (req, res)=>{
-    if(req.query.requestType === 'getPeersById'){
-      req.params.requestType = req.query.requestType;
-      if(req.query.start){
-        req.params.start = req.query.start;
-      } else {
-        req.params.start = 1;
-      }
-      if(req.query.howMany && req.query.howMany >= 1 && req.query.howMany <= defaults.webserver.limitPeersPerAPIcall){
-        req.params.howMany = req.query.howMany;
-      } else {
-        req.params.howMany = defaults.webserver.limitPeersPerAPIcall;
-      }
-    } else if(req.query.requestType === 'getPeersByPlatform'){
-      req.params.requestType = req.query.requestType;
-      if(req.query.id){
-        req.params.requestType = 'getPeersByPlatformId'
-        req.query.id = Number(req.query.id);
-        if(!isNaN(req.query.id) && req.query.id > 0){
-          if(Number.isInteger(req.query.id)){
-            req.params.id = req.query.id;
-          } else {
-            res.json({ "error": "'id' must be an integer" });
-            return;
-          }
-        } else {
-          res.json({ "error": "'id' must be a valid number" });
-          return;
-        }
-      } else if(req.query.platform){
-        req.params.platform = req.query.platform;
-      } else {
-        res.json({ "error": "You need to specify either a 'platform' or 'id' in your query" });
-        return;
-      }
-    } else if(req.query.requestType === 'getPeersByVersion'){
-      req.params.requestType = req.query.requestType;
-      if(req.query.id){
-        req.params.requestType = 'getPeersByVersionId'
-        req.query.id = Number(req.query.id);
-        if(!isNaN(req.query.id) && req.query.id > 0){
-          if(Number.isInteger(req.query.id)){
-            req.params.id = req.query.id;
-          } else {
-            res.json({ "error": "'id' must be an integer" });
-            return;
-          }
-        } else {
-          res.json({ "error": "'id' must be a valid number" });
-          return;
-        }
-      } else if(req.query.version){
-        req.params.version = req.query.version;
-      } else {
-        res.json({ "error": "You need to specify either a 'version' or 'id' in your query" });
-        return;
-      }
-    } else if(req.query.requestType === 'getPeersByHeight'){
-      req.params.requestType = req.query.requestType;
-      if(req.query.height){
-        req.query.height = Number(req.query.height);
-        if(!isNaN(req.query.height)){
-          if(Number.isInteger(req.query.height)){
-            req.params.height = req.query.height;
-          } else {
-            res.json({ "error": "'height' must be an integer" });
-            return;
-          }
-        } else {
-          res.json({ "error": "'height' must be a number" });
-          return;
-        }
-      } else {
-        res.json({ "error": "You need to specify a starting 'height' in your query" });
-        return;
-      }
-    }
-    peersRoutes.peersGet(req, res);
-  });
-const peerRoutes = require('./routes/peer');
-  // Get peer by ID or address
-  // REST GET
-  app.get('/api/peer', (req, res)=>{
-    if(req.query.id){
-      req.query.id = Number(req.query.id);
-      if(Number.isInteger(req.query.id) && req.query.id > 0){
-        req.params.id = req.query.id;
-        peerRoutes.peerGet(req, res);
-      } else {
-        res.json({ "error": "'id' must be a valid integer" });
-        return;
-      }
-    } else if(req.query.address){
-      req.params.address = String(req.query.address);
-      peerRoutes.peerGet(req, res);
+app.get('/api/peers', (req, res)=>{
+  if(req.query.requestType === 'getPeersById'){
+    req.params.requestType = req.query.requestType;
+    if(req.query.start){
+      req.params.start = req.query.start;
     } else {
-      res.json({ "error": "You must specify a valid 'id' or 'address' in your query" });
+      req.params.start = 1;
+    }
+    if(req.query.howMany && req.query.howMany >= 1 && req.query.howMany <= defaults.webserver.limitPeersPerAPIcall){
+      req.params.howMany = req.query.howMany;
+    } else {
+      req.params.howMany = defaults.webserver.limitPeersPerAPIcall;
+    }
+  } else if(req.query.requestType === 'getPeersByPlatform'){
+    req.params.requestType = req.query.requestType;
+    if(req.query.id){
+      req.params.requestType = 'getPeersByPlatformId'
+      req.query.id = Number(req.query.id);
+      if(!isNaN(req.query.id) && req.query.id > 0){
+        if(Number.isInteger(req.query.id)){
+          req.params.id = req.query.id;
+        } else {
+          res.json({ "error": "'id' must be an integer" });
+          return;
+        }
+      } else {
+        res.json({ "error": "'id' must be a valid number" });
+        return;
+      }
+    } else if(req.query.platform){
+      req.params.platform = req.query.platform;
+    } else {
+      res.json({ "error": "You need to specify either a 'platform' or 'id' in your query" });
       return;
     }
-  });
-// Search Engine Routes
-if(defaults.webserver.searchEngine.searchQueries === true){
+  } else if(req.query.requestType === 'getPeersByVersion'){
+    req.params.requestType = req.query.requestType;
+    if(req.query.id){
+      req.params.requestType = 'getPeersByVersionId'
+      req.query.id = Number(req.query.id);
+      if(!isNaN(req.query.id) && req.query.id > 0){
+        if(Number.isInteger(req.query.id)){
+          req.params.id = req.query.id;
+        } else {
+          res.json({ "error": "'id' must be an integer" });
+          return;
+        }
+      } else {
+        res.json({ "error": "'id' must be a valid number" });
+        return;
+      }
+    } else if(req.query.version){
+      req.params.version = req.query.version;
+    } else {
+      res.json({ "error": "You need to specify either a 'version' or 'id' in your query" });
+      return;
+    }
+  } else if(req.query.requestType === 'getPeersByHeight'){
+    req.params.requestType = req.query.requestType;
+    if(req.query.height){
+      req.query.height = Number(req.query.height);
+      if(!isNaN(req.query.height)){
+        if(Number.isInteger(req.query.height)){
+          req.params.height = req.query.height;
+        } else {
+          res.json({ "error": "'height' must be an integer" });
+          return;
+        }
+      } else {
+        res.json({ "error": "'height' must be a number" });
+        return;
+      }
+    } else {
+      res.json({ "error": "You need to specify a starting 'height' in your query" });
+      return;
+    }
+  }
+  peersRoutes.peersGet(req, res);
+});
+
+// Get one peer by ID or address
+const peerRoutes = require('./routes/peer');
+app.get('/api/peer', (req, res)=>{
+  if(req.query.id){
+    req.query.id = Number(req.query.id);
+    if(Number.isInteger(req.query.id) && req.query.id > 0){
+      req.params.id = req.query.id;
+      peerRoutes.peerGet(req, res);
+    } else {
+      res.json({ "error": "'id' must be a valid integer" });
+      return;
+    }
+  } else if(req.query.address){
+    req.params.address = String(req.query.address);
+    peerRoutes.peerGet(req, res);
+  } else {
+    res.json({ "error": "You must specify a valid 'id' or 'address' in your query" });
+    return;
+  }
+});
+
+// Search Engine Route - getAll routes (optional)
+if(defaults.webserver.searchEngine.searchQueries){
   const getAllRoutes = require('./routes/getAll');
     // Get all from asked table
-    // REST GET
     app.get('/api/getAll', (req, res)=>{
-      if(req.query.from === 'platforms' || req.query.from === 'versions' || req.query.from === 'peers' || req.query.from === 'scans' || req.query.from === 'checks' || req.query.from === 'locations' || req.query.from === 'ssl'){
+      if(req.query.from === 'platforms' || req.query.from === 'versions' || req.query.from === 'peers' || req.query.from === 'scans' || req.query.from === 'checks' || req.query.from === 'locations' || req.query.from === 'ssl' && req.query.where && req.query.where != '' && req.query.value && req.query.value != ''){
           getAllRoutes.allFrom(req, res);
       } else {
-        res.json({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers', 'scans', 'checks', 'locations' or 'ssl'" });
+        res.json({ "error": "You must specify a valid 'from' query, being it 'platforms', 'versions', 'peers', 'scans', 'checks', 'locations' or 'ssl' aswell as a 'where' and a 'value' query. Check API documentation at https://watchdog.burst-alliance.org/docs" });
         return;
       }
     });
-}
+};
+
 // Invalid routes
 app.use((req, res, next) => {
   const error = new Error('Not found');
   error.status = 404;
   next(error);
-})
+});
+
+// Error responses middleware
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
@@ -258,6 +266,6 @@ app.use((error, req, res, next) => {
     }
   })
   return;
-})
+});
 
 module.exports = app;

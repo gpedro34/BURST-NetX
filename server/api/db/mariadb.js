@@ -1,8 +1,22 @@
 'use strict';
 
-const utils = require('./../utils');
-const brs = require('./../lib/calls');
+// Util to be able to make forEach's asynchronous
+const asyncForEach = require('./../utils').asyncForEach;
 
+// Dictionaries for brs-crawler information in DB
+const BRS_SCAN_RESULT = [
+	'Success',
+	'Error UNKNOWN',
+	'Error TIMEOUT',
+	'Error REFUSED',
+	'Error REDIRECT'
+];
+const BRS_BLOCK_REASONS = [
+	'No',
+	'Illegal Address'
+];
+
+// Dictionaries for utils-crawler information in DB
 const BLOCK_REASONS = {
 	NOT_BLOCKED: 0,
 	ILLEGAL_ADDRESS: 1,
@@ -14,8 +28,9 @@ const SSL_CODES = {
   NOT_FOUND: 2,
   IP_MISMATCH: 3,
   EXPIRED: 4
-}
+};
 
+// Class construction
 class Peers {
   constructor(db) {
 		this.db = db;
@@ -66,7 +81,7 @@ class Peers {
             version: res[a].version
           });
         } else if (table === 'scans'){
-          res[a].result = brs.SCAN_RESULT[res[a].result];
+          res[a].result = BRS_SCAN_RESULT[res[a].result];
           ob.push({
             id: res[a].id,
             peerId: res[a].peer_id,
@@ -79,7 +94,7 @@ class Peers {
             blockHeight: res[a].block_height
           });
         } else if (table === 'peers'){
-          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          res[a].blocked = BRS_BLOCK_REASONS[res[a].blocked];
           ob.push({
             id: res[a].id,
             address: res[a].address,
@@ -101,7 +116,7 @@ class Peers {
             lastScanned: res[a].last_scanned
           });
         } else if (table === 'ssl_checks'){
-          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          res[a].blocked = BRS_BLOCK_REASONS[res[a].blocked];
           switch(res[a].ssl_status){
             case SSL_CODES.VALID:
               res[a].ssl_status = 'Valid';
@@ -127,7 +142,7 @@ class Peers {
             hash: res[a].hash
           });
         } else if (table === 'loc_checks'){
-          res[a].blocked = brs.BLOCK_REASONS[res[a].blocked];
+          res[a].blocked = BRS_BLOCK_REASONS[res[a].blocked];
           ob.push({
             id: res[a].loc_id,
             country: res[a].country_city.slice(0, res[a].country_city.indexOf(', ')),
@@ -276,7 +291,7 @@ class Peers {
 			let totalCount = 0;
 			let ts;
 			try{
-				await utils.asyncForEach(scan, async (row) => {
+				await asyncForEach(scan, async (row) => {
 					if(Math.abs(new Date(row.timestamp) - new Date()) <= timetable){
 						totalCount++;
 						switch(row.result){
@@ -466,7 +481,7 @@ class Peers {
   async getInfo (peer){
     const info = await this.allFrom('checks', peer.id, 'peer_id');
     let ips = [];
-    await utils.asyncForEach(info, async (el)=>{
+    await asyncForEach(info, async (el)=>{
       let ob = {
         ip: el.ip,
         hash: el.hash,
@@ -510,4 +525,5 @@ class Peers {
   }
 }
 
+// Export contructed class
 module.exports = Peers;

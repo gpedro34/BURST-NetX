@@ -2,9 +2,6 @@
 
 const db = require('./../db/mariadb');
 const utils = require('./../utils');
-const ssl = require('./../lib/ssl');
-const brs = require('./../lib/calls');
-const brsUtils = require('./../lib/utils');
 const defaults = require('./../../../config/defaults');
 
 const control = require('./../db/controllers').cPeers;
@@ -59,7 +56,7 @@ exports.allFrom = async (req, res) => {
       platforms: resp
     }
   } else if(req.query.from === 'peers'){
-    if(req.query.completePeers === 'true' && defaults.webserver.searchEngine.completePeers === true){
+    if(req.query.completePeers === 'true' && defaults.webserver.searchEngine.completePeers && req.query.APIKey && defaults.webserver.searchEngine.authorizedAPIKeys.indexOf(req.query.APIKey) >= 0){
       obj = {
         peers: []
       }
@@ -67,11 +64,7 @@ exports.allFrom = async (req, res) => {
         // Complete peer information
         let comp = await control.completePeer(el);
         // Resume Measurements
-        if(defaults.webserver.useUtilsCrawler){
-          comp.info = await control.getInfo({id: comp.id});
-        } else {
-          comp.info = await ssl.checkNode(comp.address);
-        }
+        comp.info = await control.getInfo({id: comp.id});
         obj.peers.push(comp);
       });
     } else {
