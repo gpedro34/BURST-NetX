@@ -1,12 +1,13 @@
 # TODO:
 
 * API
-  - Refactor and review
+  - Review and/or refactor /db/mariadb.js and /routes/*
+  - Implement Redis caching
   - Unit and Integration Testing
-  - Document SSL process in USAGE.md
-  - Improve Documentation
+  - Improve API Documentation and USAGE.md
 
 * Frontend
+  - Bug fixes
   - Search by:
     - Country (using tag "country:XXXX")
     - City (using tag "city:XXXX")
