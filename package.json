@@ -1,6 +1,6 @@
 {
   "name": "burst-netx",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "Network Explorer API and front-end",
   "main": "server.js",
   "repository": {
@@ -15,29 +15,22 @@
   ],
   "scripts": {
     "start": "node server/server.js",
-    "dev-client": "npm start --prefix client",
-    "build-client": "chmod +x ./build-client.sh && ./build-client.sh",
-    "prod-client": "serve -s fe-build -l 3000"
+    "setup": "./clean-setup.sh"
   },
-  "author": "gpedro",
+  "author": "gpedro34",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "chalk": "^2.4.2",
-    "concurrently": "^4.1.0",
     "cors": "^2.8.5",
     "exit": "^0.1.2",
     "express": "^4.16.4",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
-    "iplocation": "^6.1.0",
-    "lookup-dns-cache": "^2.1.0",
     "morgan": "^1.9.1",
     "mysql2": "^1.6.4",
     "path": "^0.12.7",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
-    "rotating-file-stream": "^1.4.0",
-    "ssl-checker": "^1.2.1"
+    "rotating-file-stream": "^1.4.0"
   }
 }
