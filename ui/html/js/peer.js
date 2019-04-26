@@ -7,50 +7,48 @@ function start(){
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var response = JSON.parse(xhr.responseText);
-        if(!response.info){
-          response.info = [{
-            apiPort: false,
-            ip: 'No IP',
-            blocked: 'Not a peer',
-            city: 'N/A',
-            country: 'N/A',
-            lastScanned: 'N/A',
-            ssl: 'Invalid',
-            sslFrom: 'N/A',
-            sslTo: 'N/A'
-          }]
+        if(response.error === "There is no peer with such address"){
+          response = {
+            discovered: "Never",
+            lastSeen: "Never",
+            lastScanned: "Never",
+            lastHeight: 0,
+            platform: "N/A",
+            version: "N/A",
+            uptime: 0,
+            info: [{
+              apiPort: false,
+              ip: 'No IP',
+              blocked: 'Not a peer',
+              city: 'N/A',
+              country: 'N/A',
+              lastScanned: 'N/A',
+              ssl: 'Invalid',
+              sslFrom: 'N/A',
+              sslTo: 'N/A'
+            }]
+          }
         }
         document.getElementById("announced").innerHTML = address;
         var date = new Date(response.discovered).toGMTString();
-        if(date === null){
+        console.log(date)
+        if(date === "Invalid Date"){
           date = 'Never seen'
         }
         document.getElementById("discovered").innerHTML = date;
         date = new Date(response.lastSeen).toGMTString();
-        if(date === null){
+        if(date === "Invalid Date"){
           date = 'Never seen'
         }
         document.getElementById("seen").innerHTML = date;
         date = new Date(response.lastScanned).toGMTString();
-        if(date === null){
-          date = 'Never Reached'
+        if(date === "Invalid Date"){
+          date = 'Never reached'
         }
         document.getElementById("scanned").innerHTML = date;
-        date = response.lastHeight;
-        if(date === null){
-          date = 'Never Reached'
-        }
-        document.getElementById("height").innerHTML = date;
-        date = response.platform;
-        if(date === null){
-          date = 'Never Reached'
-        }
-        document.getElementById("platform").innerHTML = date;
-        date = response.version;
-        if(date === null){
-          date = 'Never Reached'
-        }
-        document.getElementById("version").innerHTML = date;
+        document.getElementById("height").innerHTML = response.lastHeight;
+        document.getElementById("platform").innerHTML = response.platform;
+        document.getElementById("version").innerHTML = response.version;
         if(typeof response.uptime !== 'number'){
           response.uptime = "0.00";
         } else {
