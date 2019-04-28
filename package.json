@@ -9,8 +9,10 @@
 	},
 	"keywords": ["burst", "brs", "network", "crawler"],
 	"scripts": {
-		"start": "node server/server.js",
 		"setup": "./clean-setup.sh",
+		"test": "echo \"Tests yet to develop!\"",
+		"start": "node server/server.js",
+
 		"check-pretty": "prettier \"**/*.*\" -c --config .prettierrc.yml",
 		"check-css": "npx prettier-stylelint -q",
 		"check-html": "npx htmlhint --warn",
@@ -20,8 +22,8 @@
 		"pretty-fix": "prettier \"**/*.*\" --write -c --config .prettierrc.yml",
 		"pretty-styles-fix": "npx prettier-stylelint --write -q",
 
-		"lint": "echo Prettifying! && npm run check-pretty && echo Done! && echo Linting CSS! && npm run check-css && echo Done! && echo Linting everything else that are not HTML files! && npm run eslint && echo Done! && echo Done! Checking HTML files... && npm run check-html && echo Checked everything!!!",
-		"lint-fix": "echo Prettifying! && npm run pretty-fix && echo Done! && echo Linting and fixing CSS! && npm run pretty-styles-fix && echo Done! && echo Linting and fixing everything else that are not HTML files! && npm run eslint-fix && echo Done! && echo HTMLHint does not allow for autofixes, if you have something to fix, you'll have to do it manually! Checking... && npm run check-html && echo Ran and fixed all autofixable issues!!!"
+		"lint": "echo Prettier listing... && npm run check-pretty && echo Done! Linting CSS... && npm run check-css && echo Done! && echo Linting everything else that aren't HTML files! && npm run eslint && echo Done! Linting HTML files... && npm run check-html && echo Checked everything!!!",
+		"lint-fix": "echo Running Prettier... && npm run pretty-fix && echo Done! Linting and fixing CSS... && npm run pretty-styles-fix && echo Done! Linting and fixing everything else that aren't HTML files! && npm run eslint-fix && echo Done! && echo HTMLHint does not allow for autofixes, if you have something to fix, you'll have to do it manually! Checking... && npm run check-html && echo Fixed all autofixable issues!!!"
 	},
 	"author": "gpedro34",
 	"license": "GPL-3.0-or-later",
