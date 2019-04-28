@@ -1,0 +1,15 @@
+LICENSE
+
+*ignore
+*.json
+*.md
+*.sh
+*.log
+*.txt
+*.crt
+*.key
+*.css
+*.html
+
+ui/html/css/lib/*
+ui/html/img/*

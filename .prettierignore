@@ -1,0 +1,11 @@
+LICENSE
+
+*.md
+*.sh
+*.log
+*.txt
+*.crt
+*.key
+
+ui/html/css/lib/*
+ui/html/img/*

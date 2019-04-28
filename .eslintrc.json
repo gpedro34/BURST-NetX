@@ -1,0 +1,105 @@
+{
+	"env": {
+		"browser": true,
+		"commonjs": true,
+		"es6": true,
+		"node": true
+	},
+	"extends": ["eslint:recommended", "plugin:prettier/recommended"],
+	"globals": {
+		"Atomics": "readonly",
+		"SharedArrayBuffer": "readonly"
+	},
+	"parserOptions": {
+		"ecmaVersion": 2018
+	},
+	"rules": {
+		"spaced-comment": [
+			"warn",
+			"always",
+			{
+				"block": {
+					"exceptions": ["-", "+"]
+				}
+			}
+		],
+		"indent": ["warn", "tab", { "SwitchCase": 1 }],
+		"linebreak-style": ["warn", "windows"],
+		"quotes": [
+			"warn",
+			"single",
+			{
+				"avoidEscape": true,
+				"allowTemplateLiterals": true
+			}
+		],
+		"semi": ["warn", "always"],
+		"no-console": ["off", {}],
+		"prefer-destructuring": [
+			"warn",
+			{
+				"object": true,
+				"array": true
+			}
+		],
+		"switch-colon-spacing": [
+			"warn",
+			{
+				"after": false,
+				"before": false
+			}
+		],
+		"prefer-arrow-callback": [
+			"warn",
+			{
+				"allowUnboundThis": true,
+				"allowNamedFunctions": true
+			}
+		],
+		"arrow-spacing": [
+			"warn",
+			{
+				"before": true,
+				"after": true
+			}
+		],
+		"arrow-parens": [
+			"warn",
+			"as-needed",
+			{
+				"requireForBlockBody": false
+			}
+		],
+		"arrow-body-style": ["warn", "as-needed"],
+
+		"strict": ["error", "global"],
+		"no-var": "error",
+		"no-unused-vars": [
+			"error",
+			{
+				"vars": "all",
+				"args": "none",
+				"ignoreRestSiblings": false
+			}
+		],
+		"no-undef": "error",
+		"no-redeclare": "error",
+		"no-const-assign": "error",
+		"prefer-const": [
+			"error",
+			{
+				"destructuring": "any",
+				"ignoreReadBeforeAssign": false
+			}
+		],
+		"no-class-assign": "error",
+		"no-dupe-class-members": "error",
+		"no-unsafe-finally": "error",
+		"no-duplicate-imports": [
+			"error",
+			{
+				"includeExports": true
+			}
+		]
+	}
+}
