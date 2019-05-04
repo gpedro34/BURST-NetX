@@ -11,7 +11,9 @@ if (process.env.CORS_WHITELIST) {
 	if (process.env.DOMAIN_FE) {
 		allowedOrigins.push(process.env.DOMAIN_FE);
 	}
-	defaults.webserver.whitelistCORS = process.env.CORS_WHITELIST.split(',');
+	if (process.env.CORS_WHITELIST) {
+		defaults.webserver.whitelistCORS = process.env.CORS_WHITELIST.split(',');
+	}
 	defaults.webserver.whitelistCORS.forEach(el => {
 		allowedOrigins.push(el);
 	});

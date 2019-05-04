@@ -9,9 +9,7 @@ const config = require('./../../../config/defaults');
 // Load util to read db password from file
 const { readFileTrim } = require('./../utils');
 
-const retries =
-	process.env.DB_CONN_RETRIES ||
-	require('./../config/defaults').mariadb.retries;
+const retries = process.env.DB_CONN_RETRIES || config.mariaDB.retries;
 let dbRetry = retries;
 
 // Starts a MariaDB pool connection with class contructed
@@ -31,31 +29,43 @@ const connect = () =>
 		// supportBigNumbers: true
 	});
 
-let db, cPeers;
-const int = setInterval(() => {
-	if (dbRetry > 0) {
-		try {
-			db = connect();
-			dbRetry = 0;
-			clearInterval(int);
-			cPeers = new peers(db);
-			console.log('Connected to MariaDB');
-		} catch (err) {
-			console.log(
-				'Failed trying to establish connection to MariaDB. Trying again in 5 seconds...'
-			);
-			dbRetry--;
-		}
-	} else {
+let db, connection;
+const getConnection = () => {
+	try {
+		db = connect();
+		dbRetry = 0;
+		connection = new peers(db);
+		console.log('Connected to MariaDB');
+	} catch (err) {
 		console.log(
-			'Failed trying to establish connection to MariaDB. Tried ' +
-				retries +
-				' times. Exiting!'
+			'Failed trying to establish connection to MariaDB. Trying again in 5 seconds...'
 		);
-		exit(500);
+		dbRetry--;
+		const int = setInterval(() => {
+			if (dbRetry > 0) {
+				try {
+					db = connect();
+					dbRetry = 0;
+					connection = new peers(db);
+					console.log('Connected to MariaDB');
+					clearInterval(int);
+				} catch (err) {
+					console.log(
+						'Failed trying to establish connection to MariaDB. Trying again in 5 seconds...'
+					);
+					dbRetry--;
+				}
+			} else {
+				// prettier-ignore
+				console.log(
+					'Failed trying to establish connection to MariaDB. Tried ' + retries + ' times. Exiting!'
+				);
+				clearInterval(int);
+				exit(500);
+			}
+			dbRetry--;
+		}, 5000);
 	}
-	dbRetry--;
-}, 5000);
-
-// Export DB connection pool
-module.exports = cPeers;
+};
+getConnection();
+exports.cPeers = connection;

@@ -22,12 +22,16 @@ defaults.logger.size = process.env.LOG_SIZE || defaults.logger.size;
 defaults.logger.compress = process.env.LOG_COMPRESS || defaults.logger.compress;
 defaults.logger.maxSize = process.env.LOG_MAXSIZE || defaults.logger.maxSize;
 defaults.logger.maxFiles = process.env.LOG_MAXFILES || defaults.logger.maxFiles;
-defaults.logger.info = process.env.LOG_INFO.split(',') || defaults.logger.info;
 defaults.logger.name = process.env.LOG_NAME || defaults.logger.name;
-defaults.logger.reqHeaders =
-	process.env.LOG_REQ_HEAD.split(',') || defaults.logger.reqHeaders;
-defaults.logger.resHeaders =
-	process.env.LOG_RES_HEAD.split(',') || defaults.logger.resHeaders;
+if (process.env.LOG_INFO) {
+	defaults.logger.info = process.env.LOG_INFO.split(',');
+}
+if (process.env.LOG_REQ_HEAD) {
+	defaults.logger.reqHeaders = process.env.LOG_REQ_HEAD.split(',');
+}
+if (process.env.LOG_RES_HEAD) {
+	defaults.logger.resHeaders = process.env.LOG_RES_HEAD.split(',');
+}
 // Exceptions Middleware (not to log!)
 const morgan = require('morgan');
 app.use(
