@@ -24,8 +24,8 @@ exports.webserver = {
    'private.key' inside '~/BURST-NetX/server/ssl/' folder */
 	ssl: false,
 	sslPort: 443,
-	// frontendPath can be false if not to serve a frontend
-	frontendPath: 'ui/html',
+	// frontendPath is a string with a relative path to the folder holding the static files
+	frontendPath: false,
 	// serveAPIDocs can be false if not to redirect to documentation page
 	serveAPIDocsAt: '/docs',
 	documentationURL: 'https://documenter.getpostman.com/view/4955736/RztoNUU6',
