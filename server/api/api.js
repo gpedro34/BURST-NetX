@@ -114,7 +114,7 @@ app.use((req, res, next) => {
 
 // API Routes
 //
-// Frontend served at http://domain:port/
+// Frontend served at http://domain:port/ if a frontendPath is provided
 if (defaults.webserver.frontendPath) {
 	app.get('/', app.use(express.static(defaults.webserver.frontendPath)));
 }

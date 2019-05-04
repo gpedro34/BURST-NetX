@@ -7,7 +7,8 @@ exports.mariaDB = {
 	name: 'brs_crawler', // default: 'brs_crawler'
 	user: 'brs_crawler', // default: 'NetX'
 	pass: 'brs_crawler', // default: 'NetX'
-	maxConnections: 10 // default: 10
+	maxConnections: 10, // default: 10
+	retries: 20
 };
 // Backend Configurations
 exports.webserver = {
