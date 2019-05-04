@@ -84,8 +84,8 @@ NOTE: Serves Frontend from 'fe-build' folder
   * if set to 'DEV' will accept undefined origin API calls
   * Default: DEV  
   NOTE: CORS Whitelisted addresses will always be accepted independently of this mode.
-* CORS_WHITELIST - Array
-  * if set to ['http://localhost:5000'] will accept all API calls from localhost:5000. You can list as many as you like in here...
+* CORS_WHITELIST - String (comma separated values)
+  * if set to 'http://localhost:5000' will accept all API calls from localhost:5000. You can list as many as you like in here...
 ### MariaDB Connection configuration:
 * DB_HOST - String
   * Host name or IP of the MariaDB server to connect
@@ -137,11 +137,11 @@ NOTE: Serves Frontend from 'fe-build' folder
 * LOG_MAXFILES - Integer
   * Max number of log files to keep
   * Default: 30
-* LOG_INFO - Array of strings
+* LOG_INFO - String (comma separated values)
   * Information to include in logging
-* LOG_REQ_HEAD - Array of Strings
+* LOG_REQ_HEAD - String (comma separated values)
   * Request headers to include in logging
-* LOG_RES_HEAD - Array of Strings
+* LOG_RES_HEAD - String (comma separated values)
   * Response headers to include in logging  
 
   [For more information on logging rotation](https://www.npmjs.com/package/rotating-file-stream)
