@@ -1,5 +1,5 @@
 # BURST-NetX (Beta-stage)
-NetX is an API, that hopefully will have a frontend in the near future for a Explorer of the BURST network...
+NetX is an API for a Explorer of the BURST network...
 
 # REQUIREMENTS
 - NodeJS (>= v11.6.0)
