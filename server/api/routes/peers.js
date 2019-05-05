@@ -3,7 +3,10 @@
 const control = require('./../db/controllers').cPeers;
 const utils = require('./../utils');
 const def = require('./../../../config/defaults');
-
+const arr = process.env.AUTH_API_KEYS.split(',');
+arr.forEach(el => {
+	def.webserver.searchEngine.authorizedAPIKeys.push(el);
+});
 // Validates information from API request and fires function to get peers from DB
 const peers = async (firstIndex, amount) => {
 	// Validates firstIndex
@@ -123,7 +126,6 @@ const completeGetPeers = (req, res, obj) => {
 		if (comp.error) {
 			// Send the error
 			res.json(comp);
-			return comp;
 		}
 		comp.info = await control.getInfo({ id: comp.id });
 		ob.peers.push(comp);
@@ -131,7 +133,6 @@ const completeGetPeers = (req, res, obj) => {
 			// Send the results
 			ob.peers.sort((a, b) => a.id - b.id);
 			res.json(ob);
-			return ob;
 		}
 	});
 };
@@ -194,20 +195,23 @@ exports.peersGet = async (req, res) => {
 				return;
 			} else if (
 				req.params.requestType === 'getPeersById' &&
-				def.webserver.searchEngine.completePeers
+				req.params.completePeers &&
+				(process.env.COMPLETE_PEERS || def.webserver.searchEngine.completePeers)
 			) {
 				if (
-					process.env.authorizedAPIKeys.indexOf(req.params.apiKey) >= 0 ||
 					def.webserver.searchEngine.authorizedAPIKeys.indexOf(
 						req.params.apiKey
 					) >= 0
 				) {
-					obj = await completeGetPeers(req, res, obj.peers);
-					res.json(obj);
-					return;
+					await completeGetPeers(req, res, obj.peers);
+				} else {
+					res.json({
+						error: 'You need an API key to go that way...'
+					});
 				}
 			} else {
 				// for peersbyPlatform, peersByVersion, peersByHeight API calls
+				// and for PeersById without complete information
 				res.json(obj);
 				return;
 			}

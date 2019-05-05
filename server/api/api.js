@@ -148,6 +148,12 @@ app.get('/api/peers', (req, res) => {
 		} else {
 			req.params.howMany = defaults.webserver.limitPeersPerAPIcall;
 		}
+		if (req.query.apiKey) {
+			req.params.apiKey = req.query.apiKey;
+		}
+		if (req.query.completePeers) {
+			req.params.completePeers = req.query.completePeers;
+		}
 	} else if (req.query.requestType === 'getPeersByPlatform') {
 		req.params.requestType = req.query.requestType;
 		if (req.query.id) {

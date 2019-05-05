@@ -42,7 +42,7 @@ exports.webserver = {
     getAll?from=peers&where=blocked&value=0&completePeers=true
     which returns all unblocked peers in DB
     with 7-days uptime, location, ssl and public API checks information */
-		completePeers: false,
+		completePeers: true,
 		authorizedAPIKeys: ['GENERATE_AND_INSERT_AN_AUTHORIZED_API_KEY_IN_HERE']
 	}
 };
