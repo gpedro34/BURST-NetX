@@ -10,7 +10,7 @@ let httpsServer;
 const server = app.listen(port, () => {
 	console.log('HTTP server is listening on port ' + port);
 	// HTTPS webserver
-	if (def.webserver.ssl) {
+	if (process.env.SSL || def.webserver.ssl) {
 		const fs = require('fs');
 		const https = require('https');
 		// Check for certificates and key
@@ -26,24 +26,24 @@ const server = app.listen(port, () => {
 				key: fs.readFileSync('./server/ssl/private.key')
 			};
 			// Start HTTPS webserver
+			def.webserver.sslPort = process.env.SSL_PORT || def.webserver.sslPort;
 			httpsServer = https
 				.createServer(httpsOptions, app)
 				.listen(def.webserver.sslPort);
 			console.log('HTTPS Server is listening on port ' + def.webserver.sslPort);
-			console.log(
-				`Redirecting all requests from HTTP(${port}) to HTTPS(${
-					def.webserver.sslPort
-				})`
-			);
+			// prettier-ignore
+			console.log(`Redirecting all requests from HTTP(${port}) to HTTPS(${def.webserver.sslPort})`);
 		} else {
 			// No SSL files in ./server/ssl
 			/* Files needed in ./server/ssl/ folder:
           - certificate.crt
           - ca_bundle.crt
-          - private.key
-      */
-			console.error('Something went wrong with the SSL files');
+          - private.key */
+			console.error('Something went wrong with the SSL files... SSL disabled!');
 		}
+	} else {
+		// SSL disabled
+		console.error('SSL disabled!');
 	}
 });
 
