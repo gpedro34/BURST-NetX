@@ -33,11 +33,11 @@ const verifyQuery = req => {
 
 const verifyResponse = async (req, resp) => {
 	let obj;
-	if (req.query.from === 'versions') {
+	if (req.query.from === 'scan_versions') {
 		obj = {
 			versions: resp
 		};
-	} else if (req.query.from === 'platforms') {
+	} else if (req.query.from === 'scan_platforms') {
 		obj = {
 			platforms: resp
 		};
@@ -73,11 +73,11 @@ const verifyResponse = async (req, resp) => {
 		obj = {
 			checks: resp
 		};
-	} else if (req.query.from === 'locations') {
+	} else if (req.query.from === 'loc_checks') {
 		obj = {
 			locations: resp
 		};
-	} else if (req.query.from === 'ssl') {
+	} else if (req.query.from === 'ssl_checks') {
 		obj = {
 			ssl: resp
 		};
