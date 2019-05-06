@@ -330,16 +330,16 @@ class Peers {
 						successCount++;
 					}
 					if (!ts || Math.abs(new Date(ts) - new Date(row.timestamp)) < 0) {
-						for (let a = 0; a < ver[0].length; a++) {
-							if (ver[0][a].id === row.versionId) {
-								ob.version = ver[0][a].version;
-								a = ver[0].length;
+						for (let a = 0; a < ver.length; a++) {
+							if (ver[a].id === row.versionId) {
+								ob.version = ver[a].version;
+								a = ver.length;
 							}
 						}
-						for (let b = 0; b < plat[0].length; b++) {
-							if (plat[0][b].id === row.platformId) {
-								ob.platform = plat[0][b].platform;
-								b = plat[0].length;
+						for (let b = 0; b < plat.length; b++) {
+							if (plat[b].id === row.platformId) {
+								ob.platform = plat[b].platform;
+								b = plat.length;
 							}
 						}
 						ob.lastHeight = row.blockHeight;
