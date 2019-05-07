@@ -28,8 +28,8 @@ exports.webserver = {
 	// frontendPath is a string with a relative path to the folder holding the static files
 	frontendPath: false,
 	// serveAPIDocs can be false if not to redirect to documentation page
-	serveAPIDocsAt: '/docs',
-	documentationURL: 'https://documenter.getpostman.com/view/4955736/RztoNUU6',
+	serveAPIDocsAt: false,
+	documentationURL: false,
 	// default 10 - max amount of results provided through API getPeersById
 	limitPeersPerAPIcall: 10,
 	searchEngine: {
