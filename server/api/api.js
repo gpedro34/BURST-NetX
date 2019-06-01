@@ -106,9 +106,7 @@ app.use((req, res, next) => {
 		// redirect to HTTPS
 		res.redirect(
 			301,
-			`https://${req.headers.host}:${
-				require('./../../config/defaults').webserver.sslPort
-			}${req.url}`
+			`https://${req.headers.host}:${defaults.webserver.sslPort}${req.url}`
 		);
 		return;
 	} else {
