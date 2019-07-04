@@ -1,54 +1,58 @@
 {
-	"name": "burst-netx",
-	"version": "0.5.0",
-	"description": "Network Explorer API and front-end",
-	"main": "server.js",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/gpedro34/BURST-NetX.git"
-	},
-	"keywords": [
-		"burst",
-		"brs",
-		"network",
-		"crawler"
-	],
-	"scripts": {
-		"setup": "./clean-setup.sh",
-		"test": "echo \"Tests yet to develop!\"",
-		"start": "node server/server.js",
-		"check-pretty": "prettier \"**/*.*\" -c --config .prettierrc.yml",
-		"check-css": "npx prettier-stylelint -q",
-		"check-html": "npx htmlhint --warn",
-		"eslint": "npx eslint \"**/*.*\"",
-		"eslint-fix": "npx eslint --fix \"**/*.*\"",
-		"pretty-fix": "prettier \"**/*.*\" --write -c --config .prettierrc.yml",
-		"pretty-styles-fix": "npx prettier-stylelint --write -q",
-		"lint": "echo Prettier listing... && npm run check-pretty && echo Done! Linting CSS... && npm run check-css && echo Done! && echo Linting everything else that aren't HTML files! && npm run eslint && echo Done! Linting HTML files... && npm run check-html && echo Checked everything!!!",
-		"lint-fix": "echo Running Prettier... && npm run pretty-fix && echo Done! Linting and fixing CSS... && npm run pretty-styles-fix && echo Done! Linting and fixing everything else that aren't HTML files! && npm run eslint-fix && echo Done! && echo HTMLHint does not allow for autofixes, if you have something to fix, you'll have to do it manually! Checking... && npm run check-html && echo Fixed all autofixable issues!!!"
-	},
-	"author": "gpedro34",
-	"license": "GPL-3.0-or-later",
-	"dependencies": {
-		"body-parser": "^1.19.0",
-		"cors": "^2.8.5",
-		"exit": "^0.1.2",
-		"express": "^4.17.1",
-		"fs": "0.0.1-security",
-		"https": "^1.0.0",
-		"morgan": "^1.9.1",
-		"mysql2": "^1.6.5",
-		"path": "^0.12.7",
-		"request": "^2.88.0",
-		"request-promise-native": "^1.0.7",
-		"rotating-file-stream": "^1.4.1"
-	},
-	"devDependencies": {
-		"eslint": "^5.16.0",
-		"eslint-config-prettier": "^4.3.0",
-		"eslint-plugin-prettier": "^3.1.0",
-		"htmlhint": "^0.11.0",
-		"prettier": "^1.18.2",
-		"prettier-stylelint": "^0.4.2"
-	}
+  "name": "burst-netx",
+  "version": "0.5.0",
+  "description": "Network Explorer API and front-end",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gpedro34/BURST-NetX.git"
+  },
+  "keywords": [
+    "burst",
+    "brs",
+    "network",
+    "crawler"
+  ],
+  "scripts": {
+    "setup": "./clean-setup.sh",
+    "test": "echo \"Tests yet to develop!\"",
+    "start": "node server/server.js",
+    "check-pretty": "prettier \"**/*.*\" -c --config .prettierrc.yml",
+    "check-css": "npx prettier-stylelint -q",
+    "check-html": "npx htmlhint --warn",
+    "eslint": "npx eslint \"**/*.*\"",
+    "eslint-fix": "npx eslint --fix \"**/*.*\"",
+    "pretty-fix": "prettier \"**/*.*\" --write -c --config .prettierrc.yml",
+    "pretty-styles-fix": "npx prettier-stylelint --write -q",
+    "lint": "echo Prettier listing... && npm run check-pretty && echo Done! Linting CSS... && npm run check-css && echo Done! && echo Linting everything else that aren't HTML files! && npm run eslint && echo Done! Linting HTML files... && npm run check-html && echo Checked everything!!!",
+    "lint-fix": "echo Running Prettier... && npm run pretty-fix && echo Done! Linting and fixing CSS... && npm run pretty-styles-fix && echo Done! Linting and fixing everything else that aren't HTML files! && npm run eslint-fix && echo Done! && echo HTMLHint does not allow for autofixes, if you have something to fix, you'll have to do it manually! Checking... && npm run check-html && echo Fixed all autofixable issues!!!",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "author": "gpedro34",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "exit": "^0.1.2",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
+    "path": "^0.12.7",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7",
+    "rotating-file-stream": "^1.4.1",
+    "snyk": "^1.189.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^4.3.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "htmlhint": "^0.11.0",
+    "prettier": "^1.18.2",
+    "prettier-stylelint": "^0.4.2"
+  },
+  "snyk": true
 }
